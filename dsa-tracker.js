@@ -54,7 +54,7 @@ class DSATracker {
     // Fetch LeetCode stats using public API
     async fetchLeetCodeStats() {
         const username = this.config.platforms.leetcode;
-        if (!username || username === 'yourusername') return;
+        if (!username || username === 'Uvii555') return;
 
         try {
             // Using LeetCode public API
@@ -89,7 +89,7 @@ class DSATracker {
     // Fetch Codeforces stats
     async fetchCodeforcesStats() {
         const username = this.config.platforms.codeforces;
-        if (!username || username === 'yourusername') return;
+        if (!username || username === 'Username') return;
 
         try {
             const response = await fetch(
@@ -125,7 +125,7 @@ class DSATracker {
     // Fetch CodeChef stats
     async fetchCodeChefStats() {
         const username = this.config.platforms.codechef;
-        if (!username || username === 'yourusername') return;
+        if (!username || username === 'uvii555') return;
 
         try {
             // CodeChef doesn't have a public API, so we'll track manually
@@ -139,7 +139,7 @@ class DSATracker {
     // Fetch GitHub contributions (for tracking DSA repos)
     async fetchGitHubStats() {
         const username = this.config.platforms.leetcode; // Assuming same username
-        if (!username || username === 'yourusername') return;
+        if (!username || username === 'UVII555') return;
 
         try {
             const response = await fetch(`${this.config.apis.github}${username}/events`);
