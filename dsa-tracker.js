@@ -16,6 +16,19 @@ class DSATracker {
         };
     }
 
+    // Treat only obvious placeholders as invalid usernames
+    isPlaceholder(value) {
+        if (!value) return true;
+        const normalized = String(value).trim().toLowerCase();
+        return normalized === 'yourusername' || normalized === 'username';
+    }
+
+    getGithubConfig() {
+        return this.config.github || { repoKeywords: ['dsa', 'leetcode', 'algorithm'], countAllPushEvents: false };
+    }
+
+
+
     // Main method to fetch all stats
     async fetchAllStats() {
         console.log('🔄 Fetching DSA stats from all platforms...');
@@ -33,6 +46,7 @@ class DSATracker {
             // Fetch from all platforms
             await Promise.allSettled([
                 this.fetchLeetCodeStats(),
+                this.fetchLeetCodeRecent(),
                 this.fetchCodeforcesStats(),
                 this.fetchCodeChefStats(),
                 this.fetchGitHubStats()
@@ -54,7 +68,7 @@ class DSATracker {
     // Fetch LeetCode stats using public API
     async fetchLeetCodeStats() {
         const username = this.config.platforms.leetcode;
-        if (!username || username === 'Uvii555') return;
+        if (this.isPlaceholder(username)) return;
 
         try {
             // Using LeetCode public API
@@ -86,10 +100,56 @@ class DSATracker {
         }
     }
 
+    // Fetch recent LeetCode accepted problems (GraphQL)
+    async fetchLeetCodeRecent() {
+        const username = this.config.platforms.leetcode;
+        if (this.isPlaceholder(username)) return;
+
+        try {
+            const recentConfig = this.config.leetcodeRecent || {};
+            const limit = Number(recentConfig.limit || 5);
+            const endpoint = recentConfig.proxy || this.config.apis.leetcodeGraphQL;
+
+            const body = {
+                query: `
+                    query recentAcSubmissions($username: String!, $limit: Int!) {
+                        recentAcSubmissionList(username: $username, limit: $limit) {
+                            title
+                            titleSlug
+                            timestamp
+                        }
+                    }
+                `,
+                variables: { username, limit }
+            };
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) throw new Error('LeetCode GraphQL error');
+
+            const data = await response.json();
+            const list = (data && data.data && data.data.recentAcSubmissionList) || [];
+
+            this.stats.recentProblems = list.map(item => ({
+                title: item.title,
+                titleSlug: item.titleSlug,
+                timestamp: Number(item.timestamp) * 1000
+            }));
+
+            console.log('✅ LeetCode recent problems fetched');
+        } catch (error) {
+            console.warn('⚠️ Could not fetch LeetCode recent problems:', error.message);
+        }
+    }
+
     // Fetch Codeforces stats
     async fetchCodeforcesStats() {
         const username = this.config.platforms.codeforces;
-        if (!username || username === 'Username') return;
+        if (this.isPlaceholder(username)) return;
 
         try {
             const response = await fetch(
@@ -125,7 +185,7 @@ class DSATracker {
     // Fetch CodeChef stats
     async fetchCodeChefStats() {
         const username = this.config.platforms.codechef;
-        if (!username || username === 'uvii555') return;
+        if (this.isPlaceholder(username)) return;
 
         try {
             // CodeChef doesn't have a public API, so we'll track manually
@@ -138,8 +198,8 @@ class DSATracker {
 
     // Fetch GitHub contributions (for tracking DSA repos)
     async fetchGitHubStats() {
-        const username = this.config.platforms.leetcode; // Assuming same username
-        if (!username || username === 'UVII555') return;
+        const username = this.config.platforms.github || this.config.platforms.leetcode;
+        if (this.isPlaceholder(username)) return;
 
         try {
             const response = await fetch(`${this.config.apis.github}${username}/events`);
@@ -147,18 +207,28 @@ class DSATracker {
             if (!response.ok) throw new Error('GitHub API error');
 
             const events = await response.json();
-            
-            // Filter for DSA-related commits
-            const dsaEvents = events.filter(event => 
-                event.type === 'PushEvent' && 
-                (event.repo.name.toLowerCase().includes('dsa') ||
-                 event.repo.name.toLowerCase().includes('leetcode') ||
-                 event.repo.name.toLowerCase().includes('algorithm'))
+            const { repoKeywords, countAllPushEvents } = this.getGithubConfig();
+            const keywords = (repoKeywords || []).map(k => String(k).toLowerCase());
+
+            const pushEvents = events.filter(event =>
+                event.type === 'PushEvent' && event.payload && Array.isArray(event.payload.commits)
+            );
+
+            const filteredEvents = countAllPushEvents
+                ? pushEvents
+                : pushEvents.filter(event => {
+                    const repoName = (event.repo && event.repo.name ? event.repo.name : '').toLowerCase();
+                    return keywords.some(k => repoName.includes(k));
+                });
+
+            const commitCount = filteredEvents.reduce(
+                (sum, event) => sum + (event.payload.commits ? event.payload.commits.length : 0),
+                0
             );
 
             this.stats.platforms.github = {
-                dsaCommits: dsaEvents.length,
-                recentActivity: dsaEvents.slice(0, 5)
+                dsaCommits: commitCount,
+                recentActivity: filteredEvents.slice(0, 5)
             };
 
             console.log('✅ GitHub stats fetched');
@@ -179,6 +249,9 @@ class DSATracker {
 
         // Update platform-specific stats
         this.updatePlatformStats();
+
+        // Update recent LeetCode problems
+        this.updateRecentProblemsUI();
 
         // Update last updated time
         this.updateTimestamp();
@@ -263,6 +336,36 @@ class DSATracker {
         }
 
         platformsContainer.innerHTML = html || '<p>Configure your usernames in dsa-config.js</p>';
+    }
+
+    // Update recent LeetCode problems UI
+    updateRecentProblemsUI() {
+        const listElement = document.getElementById('leetcode-recent-list');
+        if (!listElement) return;
+
+        const items = this.stats.recentProblems || [];
+        if (!items.length) {
+            listElement.innerHTML = `
+                <li class="loading-placeholder">
+                    <i class="fas fa-info-circle"></i>
+                    <span>No recent LeetCode submissions found.</span>
+                </li>
+            `;
+            return;
+        }
+
+        listElement.innerHTML = items.map(item => {
+            const date = item.timestamp ? new Date(item.timestamp).toLocaleString() : 'Unknown time';
+            const link = item.titleSlug ? `https://leetcode.com/problems/${item.titleSlug}/` : '#';
+            return `
+                <li class="leetcode-recent-item">
+                    <a class="leetcode-recent-title" href="${link}" target="_blank" rel="noopener">
+                        ${item.title || 'Untitled'}
+                    </a>
+                    <span class="leetcode-recent-meta">${date}</span>
+                </li>
+            `;
+        }).join('');
     }
 
     // Update timestamp

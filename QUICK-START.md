@@ -2,7 +2,7 @@
 
 ## ⚠️ Current Status: NOT CONFIGURED YET
 
-Your DSA tracker shows "Loading..." because the default username is `'yourusername'` which doesn't exist.
+Your DSA tracker shows "Loading..." because the default username is `'UVII555'` which doesn't exist.
 
 ---
 
@@ -15,10 +15,10 @@ Find lines 9-12 and replace with YOUR actual usernames:
 **BEFORE (Current):**
 ```javascript
 platforms: {
-    leetcode: 'yourusername',      // ❌ This doesn't work!
-    codeforces: 'yourusername',
-    codechef: 'yourusername',
-    hackerrank: 'yourusername'
+    leetcode: 'UVII555',      // ❌ This doesn't work!
+    codeforces: 'UVII555',
+    codechef: 'UVII555',
+    hackerrank: 'UVII555'
 }
 ```
 
@@ -190,7 +190,7 @@ git commit -m "Initial commit: Portfolio website"
 
 # Create repo on GitHub.com first, then:
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/portfolio.git
+git remote add origin https://github.com/UVII555/portfolio.git
 git push -u origin main
 ```
 
@@ -199,7 +199,7 @@ git push -u origin main
 2. Source: `main` branch
 3. Save
 
-**Live at:** `https://YOUR_USERNAME.github.io/portfolio/`
+**Live at:** `https://UVII555.github.io/portfolio/`
 
 ---
 
@@ -242,7 +242,7 @@ You can change the name in settings.
 ### "Loading platform stats..." won't go away
 
 **Causes:**
-- Username is still `'yourusername'`
+- Username is still `'UVII555'`
 - Profile is private
 - Wrong username (typo)
 

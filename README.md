@@ -34,8 +34,8 @@ Open `index.html` and update:
 - **Line 338**: Replace `[Your University Name]` with your actual university
 - **Line 339**: Update graduation year `20XX`
 - **Line 421**: Update email `utsav.singh@example.com`
-- **Line 428**: Update GitHub URL `yourusername`
-- **Line 435**: Update LinkedIn URL `yourusername`
+- **Line 428**: Update GitHub URL `UVII555`
+- **Line 435**: Update LinkedIn URL `UVII555`
 
 ### 2. Add Your Resume
 
@@ -78,12 +78,12 @@ Replace the profile placeholder:
    git add .
    git commit -m "Initial commit: Portfolio website"
    git branch -M main
-   git remote add origin https://github.com/yourusername/portfolio.git
+   git remote add origin https://github.com/UVII555/portfolio.git
    git push -u origin main
    ```
 3. Go to repository Settings → Pages
 4. Set source to `main` branch
-5. Your site will be live at: `https://yourusername.github.io/portfolio/`
+5. Your site will be live at: `https://UVII555.github.io/portfolio/`
 
 ### Netlify
 

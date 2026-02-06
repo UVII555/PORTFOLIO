@@ -8,7 +8,7 @@ If you've already deployed and your site shows default template values, follow t
 
 Your deployed site shows:
 - ❌ `[Your University Name]`
-- ❌ `yourusername` 
+- ❌ `UVII555` 
 - ❌ `utsav.singh@example.com`
 - ❌ `20XX`
 
@@ -74,7 +74,7 @@ If you prefer to edit manually, here's what to change:
 #### Change 4: GitHub (Line 511)
 ```html
 <!-- FIND THIS: -->
-<a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a>
+<a href="https://github.com/UVII555" target="_blank">github.com/UVII555</a>
 
 <!-- REPLACE WITH: -->
 <a href="https://github.com/your_actual_github" target="_blank">github.com/your_actual_github</a>
@@ -83,7 +83,7 @@ If you prefer to edit manually, here's what to change:
 #### Change 5: LinkedIn (Line 518)
 ```html
 <!-- FIND THIS: -->
-<a href="https://linkedin.com/in/yourusername" target="_blank">linkedin.com/in/yourusername</a>
+<a href="https://linkedin.com/in/UVII555" target="_blank">linkedin.com/in/UVII555</a>
 
 <!-- REPLACE WITH: -->
 <a href="https://linkedin.com/in/your_linkedin_id" target="_blank">linkedin.com/in/your_linkedin_id</a>
@@ -92,7 +92,7 @@ If you prefer to edit manually, here's what to change:
 #### Change 6: Footer GitHub (Line 561)
 ```html
 <!-- FIND THIS: -->
-<a href="https://github.com/yourusername" target="_blank" aria-label="GitHub">
+<a href="https://github.com/UVII555" target="_blank" aria-label="GitHub">
 
 <!-- REPLACE WITH: -->
 <a href="https://github.com/your_actual_github" target="_blank" aria-label="GitHub">
@@ -101,7 +101,7 @@ If you prefer to edit manually, here's what to change:
 #### Change 7: Footer LinkedIn (Line 564)
 ```html
 <!-- FIND THIS: -->
-<a href="https://linkedin.com/in/yourusername" target="_blank" aria-label="LinkedIn">
+<a href="https://linkedin.com/in/UVII555" target="_blank" aria-label="LinkedIn">
 
 <!-- REPLACE WITH: -->
 <a href="https://linkedin.com/in/your_linkedin_id" target="_blank" aria-label="LinkedIn">
@@ -124,10 +124,10 @@ If you prefer to edit manually, here's what to change:
 ```javascript
 // FIND THIS:
 platforms: {
-    leetcode: 'yourusername',
-    codeforces: 'yourusername',
-    codechef: 'yourusername',
-    hackerrank: 'yourusername'
+    leetcode: 'UVII555',
+    codeforces: 'UVII555',
+    codechef: 'UVII555',
+    hackerrank: 'UVII555'
 }
 
 // REPLACE WITH YOUR ACTUAL USERNAMES:
@@ -180,8 +180,8 @@ After updating, check your deployed site for:
 - [ ] University name shows YOUR university (not `[Your University Name]`)
 - [ ] Graduation year shows YOUR year (not `20XX`)
 - [ ] Email shows YOUR email (not `utsav.singh@example.com`)
-- [ ] GitHub links go to YOUR profile (not `yourusername`)
-- [ ] LinkedIn links go to YOUR profile (not `yourusername`)
+- [ ] GitHub links go to YOUR profile (not `UVII555`)
+- [ ] LinkedIn links go to YOUR profile (not `UVII555`)
 - [ ] DSA tracker shows numbers (not "Loading...") if you added usernames
 - [ ] Footer links are correct
 
@@ -204,14 +204,14 @@ Or clear browser cache: `Cmd + Shift + R`
 ### Issue: DSA stats still showing "Loading..."
 
 **Causes:**
-1. Usernames still say `'yourusername'` in dsa-config.js
+1. Usernames still say `'UVII555'` in dsa-config.js
 2. Profiles are private
 3. Typo in username
 
 **Solution:**
 1. Double-check usernames in dsa-config.js
 2. Make profiles public on LeetCode/Codeforces
-3. Test username by visiting: `https://leetcode.com/YOUR_USERNAME`
+3. Test username by visiting: `https://leetcode.com/UVII555`
 
 ### Issue: Git says "nothing to commit"
 
@@ -244,8 +244,8 @@ Check that:
 ```bash
 # Check current values in files
 grep "Your University" index.html
-grep "yourusername" index.html
-grep "yourusername" dsa-config.js
+grep "UVII555" index.html
+grep "UVII555" dsa-config.js
 ```
 
 If these commands return results, you haven't updated yet!
@@ -267,7 +267,7 @@ mv dsa-config.js.backup dsa-config.js
 1. **Use Find & Replace** in your editor:
    - Open index.html
    - Press `Cmd + F` (Mac) or `Ctrl + F` (Windows)
-   - Find: `yourusername`
+   - Find: `UVII555`
    - Replace with: `your_actual_github`
    - Click "Replace All"
 
@@ -301,7 +301,7 @@ When you visit your deployed site, you should see:
 NOT:
 ```
 ❌ [Your University Name]
-❌ yourusername
+❌ UVII555
 ❌ utsav.singh@example.com
 ❌ 20XX
 ❌ Loading platform stats...

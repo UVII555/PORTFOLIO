@@ -122,6 +122,10 @@ const formStatus = document.getElementById('formStatus');
 
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // Contact form is not wired to a backend yet
+    showFormStatus('Coming soon: contact form integration is not connected yet.', 'info');
+    return;
     
     // Get form values
     const name = document.getElementById('name').value.trim();

@@ -508,14 +508,14 @@
                         <i class="fab fa-github"></i>
                         <div>
                             <h4>GitHub</h4>
-                            <a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a>
+                            <a href="https://github.com/UVII555" target="_blank">github.com/UVII555</a>
                         </div>
                     </div>
                     <div class="contact-item">
                         <i class="fab fa-linkedin"></i>
                         <div>
                             <h4>LinkedIn</h4>
-                            <a href="https://linkedin.com/in/yourusername" target="_blank">linkedin.com/in/yourusername</a>
+                            <a href="https://linkedin.com/in/UVII555" target="_blank">linkedin.com/in/UVII555</a>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -558,10 +558,10 @@
             <div class="footer-content">
                 <p>&copy; 2026 Utsav Singh. All rights reserved.</p>
                 <div class="social-links">
-                    <a href="https://github.com/yourusername" target="_blank" aria-label="GitHub">
+                    <a href="https://github.com/UVII555" target="_blank" aria-label="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
-                    <a href="https://linkedin.com/in/yourusername" target="_blank" aria-label="LinkedIn">
+                    <a href="https://linkedin.com/in/UVII555" target="_blank" aria-label="LinkedIn">
                         <i class="fab fa-linkedin"></i>
                     </a>
                     <a href="mailto:utsav.singh@example.com" aria-label="Email">
