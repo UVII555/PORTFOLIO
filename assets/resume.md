@@ -1,6 +1,6 @@
 # UTSAV SINGH
 Computer Science Undergraduate | Cloud Computing Specialization
-India | 0202singhutsav@gmail.com | +91-XXXXXXXXXX
+India | 0202singhutsav@gmail.com | +91-6388552718
 GitHub: https://github.com/UVII555 | LinkedIn: https://linkedin.com/in/UVII555
 
 ## Professional Summary
@@ -9,7 +9,7 @@ Computer Science undergraduate (2nd year) specializing in Cloud Computing with h
 ## Education
 **Bachelor of Technology (B.Tech) – Computer Science Engineering**
 Specialization: Cloud Computing
-Noida Institute of Engineering and Technology
+Noida Institute of Engineering and Technology, K.P-2, Greater Noida
 2024 – 2028 | CGPA: 7.5 / 10
 
 ## Technical Skills

@@ -1,0 +1,108 @@
+\documentclass[10pt,a4paper,withhyper]{altacv}
+\geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
+\usepackage{paracol}
+\iftutex
+  \setmainfont{Roboto Slab}
+  \setsansfont{Lato}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage[rm]{roboto}
+  \usepackage[defaultsans]{lato}
+  \renewcommand{\familydefault}{\sfdefault}
+\fi
+
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\definecolor{DarkPastelRed}{HTML}{450808}
+\definecolor{PastelRed}{HTML}{8F0D0D}
+\definecolor{GoldenEarth}{HTML}{E7D192}
+\colorlet{name}{black}
+\colorlet{tagline}{PastelRed}
+\colorlet{heading}{DarkPastelRed}
+\colorlet{headingrule}{GoldenEarth}
+\colorlet{subheading}{PastelRed}
+\colorlet{accent}{PastelRed}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+
+\renewcommand{\namefont}{\Huge\rmfamily\bfseries}
+\renewcommand{\personalinfofont}{\footnotesize}
+\renewcommand{\cvsectionfont}{\LARGE\rmfamily\bfseries}
+\renewcommand{\cvsubsectionfont}{\large\bfseries}
+\renewcommand{\cvItemMarker}{{\small\textbullet}}
+\renewcommand{\cvRatingMarker}{\faCircle}
+
+\begin{document}
+\name{Utsav Singh}
+\tagline{Computer Science Undergraduate | Cloud Computing Specialization}
+\personalinfo{%
+  \email{0202singhutsav@gmail.com}
+  \phone{+91-6388552718}
+  \location{Noida Institute of Engineering and Technology, K.P-2, Greater Noida}
+  \linkedin{UVII555}
+  \github{UVII555}
+}
+
+\makecvheader
+\columnratio{0.6}
+\begin{paracol}{2}
+
+\cvsection{Professional Summary}
+Computer Science undergraduate (2nd year) specializing in Cloud Computing with hands-on experience in real-time data analysis systems, full-stack web development, and AWS cloud fundamentals. Strong foundation in core CS subjects and a continuous learner actively building real-world projects.
+
+\cvsection{Education}
+\cvevent{B.Tech in Computer Science Engineering}{Specialization: Cloud Computing}{2024 -- 2028}{CGPA: 7.5/10}
+Noida Institute of Engineering and Technology
+
+\cvsection{Projects}
+\cvevent{Real-Time Hacker News Analysis Agent}{Python, APIs, Data Processing, Git}{Ongoing}{}
+\begin{itemize}
+\item Fetches stories and comments from Hacker News using APIs
+\item Data cleaning and structured processing on large text datasets
+\item Extracts insights using basic NLP techniques
+\end{itemize}
+
+\divider
+
+\cvevent{Blogging Website}{HTML, CSS, PHP, MySQL}{Ongoing}{}
+\begin{itemize}
+\item Full-stack blogging platform with authentication
+\item CRUD operations and MySQL integration
+\end{itemize}
+
+\divider
+
+\cvevent{Personal Portfolio Website}{HTML, CSS, JavaScript}{Ongoing}{}
+\begin{itemize}
+\item Responsive portfolio with clean UI and performance focus
+\item Planned deployment via GitHub Pages / Netlify
+\end{itemize}
+
+\divider
+
+\cvevent{DSA Tracker \& Practice Repository}{Java, Git, GitHub}{}{}
+\begin{itemize}
+\item Curated 20 problems per topic for placement preparation
+\item Tracks progress and daily practice consistency
+\end{itemize}
+
+\switchcolumn
+
+\cvsection{Technical Skills}
+\cvtag{Java}\cvtag{Python}\cvtag{C}\\
+\cvtag{HTML}\cvtag{CSS}\cvtag{JavaScript}\cvtag{PHP}\\
+\cvtag{MySQL}\cvtag{AWS (VPC, EC2, S3, IAM)}\\
+\cvtag{Linux}\cvtag{DBMS}\cvtag{Git}\cvtag{GitHub}\cvtag{VS Code}
+
+\cvsection{Certifications}
+\begin{itemize}
+\item AWS Cloud Batch -- Earned
+\item Cloud Computing Fundamentals
+\end{itemize}
+
+\cvsection{Core Strengths}
+\cvtag{Problem Solving}\cvtag{Logical Thinking}\\
+\cvtag{Self-Learning}\cvtag{Team Collaboration}
+
+\end{paracol}
+\end{document}

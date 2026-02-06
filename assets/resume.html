@@ -5,96 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Utsav Singh - Resume</title>
   <style>
-    body {
-      font-family: "Georgia", "Times New Roman", serif;
-      color: #1f2937;
-      margin: 32px;
-      line-height: 1.5;
+    :root {
+      --accent: #8f0d0d;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #ffffff;
     }
-    h1 { font-size: 28px; margin: 0 0 4px; }
-    h2 { font-size: 18px; margin: 24px 0 8px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; }
-    h3 { font-size: 16px; margin: 12px 0 4px; }
-    p { margin: 0 0 8px; }
-    .muted { color: #6b7280; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .section { margin-top: 16px; }
-    .list { margin: 6px 0 12px; padding-left: 18px; }
-    .tagline { font-weight: 600; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Lato", "Segoe UI", sans-serif;
+      color: var(--text);
+      margin: 0;
+      background: var(--bg);
+    }
+    .page {
+      max-width: 900px;
+      margin: 32px auto;
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+    h1 { font-size: 32px; margin: 0; letter-spacing: 0.5px; }
+    .tagline { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .contact { font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 12px; }
+    h2 { font-size: 18px; margin: 24px 0 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+    h3 { font-size: 15px; margin: 12px 0 6px; }
+    p { margin: 0 0 8px; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+    .pill { display: inline-block; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; color: var(--muted); }
+    ul { margin: 6px 0 12px; padding-left: 18px; }
+    .project { margin-bottom: 12px; }
+    .tech { color: var(--muted); font-size: 13px; }
   </style>
 </head>
 <body>
-  <h1>UTSAV SINGH</h1>
-  <p class="tagline">Computer Science Undergraduate | Cloud Computing Specialization</p>
-  <p class="muted">India | 0202singhutsav@gmail.com | +91-XXXXXXXXXX</p>
-  <p class="muted">GitHub: github.com/UVII555 | LinkedIn: linkedin.com/in/UVII555</p>
+  <div class="page">
+    <header>
+      <h1>UTSAV SINGH</h1>
+      <div class="tagline">Computer Science Undergraduate | Cloud Computing Specialization</div>
+      <div class="contact">
+        <span>India</span>
+        <span>0202singhutsav@gmail.com</span>
+        <span>+91-6388552718</span>
+        <span>GitHub: github.com/UVII555</span>
+        <span>LinkedIn: linkedin.com/in/UVII555</span>
+      </div>
+    </header>
 
-  <h2>Professional Summary</h2>
-  <p>Computer Science undergraduate (2nd year) specializing in Cloud Computing with hands-on experience in real-time data analysis systems, full-stack web development, and AWS cloud fundamentals. Strong foundation in core CS subjects and a continuous learner actively building real-world projects.</p>
+    <h2>Professional Summary</h2>
+    <p>Computer Science undergraduate (2nd year) specializing in Cloud Computing with hands-on experience in real-time data analysis systems, full-stack web development, and AWS cloud fundamentals. Strong foundation in core CS subjects and a continuous learner actively building real-world projects.</p>
 
-  <h2>Education</h2>
-  <h3>Bachelor of Technology (B.Tech) – Computer Science Engineering</h3>
-  <p class="muted">Specialization: Cloud Computing | Noida Institute of Engineering and Technology</p>
-  <p class="muted">2024 – 2028 | CGPA: 7.5 / 10</p>
+    <h2>Education</h2>
+    <h3>Bachelor of Technology (B.Tech) – Computer Science Engineering</h3>
+    <p class="tech">Specialization: Cloud Computing</p>
+    <p class="tech">Noida Institute of Engineering and Technology, K.P-2, Greater Noida</p>
+    <p class="tech">2024 – 2028 | CGPA: 7.5 / 10</p>
 
-  <h2>Technical Skills</h2>
-  <div class="grid">
-    <div>
-      <p><strong>Programming Languages:</strong> Java, Python, C</p>
-      <p><strong>Web Development:</strong> HTML, CSS, JavaScript, PHP</p>
-      <p><strong>Databases:</strong> MySQL</p>
+    <h2>Technical Skills</h2>
+    <div class="grid">
+      <div><strong>Programming:</strong> Java, Python, C</div>
+      <div><strong>Web:</strong> HTML, CSS, JavaScript, PHP</div>
+      <div><strong>Databases:</strong> MySQL</div>
+      <div><strong>Tools:</strong> Git, GitHub, VS Code</div>
+      <div><strong>Cloud:</strong> AWS (VPC, EC2, S3, IAM), Cloud Computing Concepts, HPC Fundamentals</div>
+      <div><strong>Core CS:</strong> Linux, Operating Systems, DBMS</div>
     </div>
-    <div>
-      <p><strong>Cloud & Distributed Systems:</strong> AWS Cloud Fundamentals (VPC, EC2, S3, IAM), Cloud Computing Concepts, HPC Fundamentals</p>
-      <p><strong>Core CS:</strong> Linux, Operating Systems, DBMS</p>
-      <p><strong>Tools:</strong> Git, GitHub, VS Code</p>
+
+    <h2>Projects</h2>
+    <div class="project">
+      <h3>Real-Time Hacker News Analysis Agent (Ongoing)</h3>
+      <ul>
+        <li>Fetches stories and comments from Hacker News using APIs</li>
+        <li>Data cleaning and structured processing on large text datasets</li>
+        <li>Extracts insights using basic NLP techniques</li>
+        <li>Designed with focus on modularity and scalability</li>
+      </ul>
+      <div class="tech">Tech: Python, APIs, Data Processing, Git</div>
     </div>
+
+    <div class="project">
+      <h3>Blogging Website (Ongoing)</h3>
+      <ul>
+        <li>Full-stack blogging platform with authentication and database support</li>
+        <li>CRUD operations for blog posts</li>
+        <li>Backend integration with MySQL</li>
+      </ul>
+      <div class="tech">Tech: HTML, CSS, PHP, MySQL</div>
+    </div>
+
+    <div class="project">
+      <h3>Personal Portfolio Website (Ongoing)</h3>
+      <ul>
+        <li>Responsive portfolio to showcase skills and projects</li>
+        <li>Focus on clean UI, accessibility, and performance</li>
+        <li>Deployment on GitHub Pages / Netlify</li>
+      </ul>
+      <div class="tech">Tech: HTML, CSS, JavaScript</div>
+    </div>
+
+    <div class="project">
+      <h3>DSA Tracker & Practice Repository</h3>
+      <ul>
+        <li>Organized 20 curated LeetCode problems per topic for placement preparation</li>
+        <li>Tracks daily practice consistency</li>
+      </ul>
+      <div class="tech">Tech: Java, Git, GitHub</div>
+    </div>
+
+    <h2>Certifications & Training</h2>
+    <p class="pill">AWS Cloud Batch – Earned</p>
+    <p class="pill">Cloud Computing Fundamentals</p>
+
+    <h2>Core Strengths</h2>
+    <p class="pill">Problem Solving</p>
+    <p class="pill">Logical Thinking</p>
+    <p class="pill">Self-Learning</p>
+    <p class="pill">Team Collaboration</p>
   </div>
-
-  <h2>Projects</h2>
-  <h3>Real-Time Hacker News Analysis Agent (Ongoing)</h3>
-  <ul class="list">
-    <li>Fetches stories and comments from Hacker News using APIs</li>
-    <li>Performs data cleaning and structured processing on large text datasets</li>
-    <li>Extracts insights using basic NLP techniques</li>
-    <li>Designed with focus on modularity and scalability</li>
-  </ul>
-  <p class="muted"><strong>Tech:</strong> Python, APIs, Data Processing, Git</p>
-
-  <h3>Blogging Website (Ongoing)</h3>
-  <ul class="list">
-    <li>Full-stack blogging platform with authentication and database support</li>
-    <li>CRUD operations for blog posts</li>
-    <li>Backend integration with MySQL</li>
-  </ul>
-  <p class="muted"><strong>Tech:</strong> HTML, CSS, PHP, MySQL</p>
-
-  <h3>Personal Portfolio Website (Ongoing)</h3>
-  <ul class="list">
-    <li>Responsive portfolio to showcase skills and projects</li>
-    <li>Focus on clean UI, accessibility, and performance</li>
-    <li>Deployment on GitHub Pages / Netlify</li>
-  </ul>
-  <p class="muted"><strong>Tech:</strong> HTML, CSS, JavaScript</p>
-
-  <h3>DSA Tracker & Practice Repository</h3>
-  <ul class="list">
-    <li>Organized 20 curated LeetCode problems per topic for placement preparation</li>
-    <li>Tracks daily practice consistency</li>
-  </ul>
-  <p class="muted"><strong>Tech:</strong> Java, Git, GitHub</p>
-
-  <h2>Certifications & Training</h2>
-  <ul class="list">
-    <li>AWS Cloud Batch – Earned</li>
-    <li>Cloud Computing Fundamentals</li>
-  </ul>
-
-  <h2>Core Strengths</h2>
-  <ul class="list">
-    <li>Problem Solving</li>
-    <li>Logical Thinking</li>
-    <li>Self-Learning Ability</li>
-    <li>Team Collaboration</li>
-  </ul>
 </body>
 </html>
