@@ -903,6 +903,48 @@ section {
     font-weight: 500;
 }
 
+.honeypot-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 9999;
+    font-size: var(--font-size-sm);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.success {
+    border-color: #16a34a;
+}
+
+.toast.error {
+    border-color: #dc2626;
+}
+
+.toast.info {
+    border-color: #0ea5e9;
+}
+
 .stat-label {
     color: var(--text-secondary);
     font-size: var(--font-size-sm);

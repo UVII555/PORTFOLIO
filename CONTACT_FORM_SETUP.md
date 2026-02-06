@@ -25,6 +25,17 @@ function doPost(e) {
       data.timestamp || new Date().toISOString()
     ]);
 
+    // Optional: Email notification on each submission
+    // Uncomment and set your email
+    // MailApp.sendEmail({
+    //   to: "0202singhutsav@gmail.com",
+    //   subject: "New Portfolio Message",
+    //   htmlBody: "<p><strong>Name:</strong> " + (data.name || "") + "</p>" +
+    //             "<p><strong>Email:</strong> " + (data.email || "") + "</p>" +
+    //             "<p><strong>Subject:</strong> " + (data.subject || "") + "</p>" +
+    //             "<p><strong>Message:</strong><br/>" + (data.message || "") + "</p>"
+    // });
+
     return ContentService
       .createTextOutput(JSON.stringify({ status: "ok" }))
       .setMimeType(ContentService.MimeType.JSON);

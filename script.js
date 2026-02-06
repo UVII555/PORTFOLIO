@@ -120,6 +120,17 @@ window.addEventListener('scroll', () => {
 const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('formStatus');
 const CONTACT_FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyM4fC6SrVTphRMoO7F8IbnooKnkJ6f413v1BjYa6OpON2QJtJcR8qVBadPu58UhadegQ/exec';
+const toast = document.getElementById('toast');
+
+function showToast(message, type = 'info') {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => {
+        toast.className = 'toast';
+        toast.textContent = '';
+    }, 3500);
+}
 
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -134,6 +145,14 @@ contactForm.addEventListener('submit', (e) => {
     const email = document.getElementById('email').value.trim();
     const subject = document.getElementById('subject').value.trim();
     const message = document.getElementById('message').value.trim();
+    const website = document.getElementById('website')?.value.trim();
+
+    // Honeypot anti-spam (bots will fill hidden fields)
+    if (website) {
+        showToast('Thanks! Your message is being processed.', 'success');
+        contactForm.reset();
+        return;
+    }
     
     // Validation
     if (!name || !email || !subject || !message) {
@@ -156,6 +175,7 @@ contactForm.addEventListener('submit', (e) => {
     
     // Submit to Google Sheets via Apps Script
     showFormStatus('Sending message...', 'info');
+    showToast('Sending message...', 'info');
 
     const payload = new URLSearchParams({
         name,
@@ -177,6 +197,7 @@ contactForm.addEventListener('submit', (e) => {
         })
         .then(() => {
             showFormStatus('Message sent successfully! I\'ll get back to you soon.', 'success');
+            showToast('Message sent successfully!', 'success');
             contactForm.reset();
             setTimeout(() => {
                 formStatus.textContent = '';
@@ -185,6 +206,7 @@ contactForm.addEventListener('submit', (e) => {
         })
         .catch(() => {
             showFormStatus('Submission failed. Please try again later.', 'error');
+            showToast('Submission failed. Please try again later.', 'error');
         });
 });
 
