@@ -8,8 +8,8 @@ const DSA_CONFIG = {
     platforms: {
         leetcode: 'Uvii555',      // Replace with your LeetCode username
         codeforces: 'yourusername',    // Replace with your Codeforces username
-        codechef: 'yourusername',      // Replace with your CodeChef username
-        hackerrank: 'yourusername'     // Replace with your HackerRank username
+        codechef: 'uvii555',      // Replace with your CodeChef username
+        hackerrank: '@0202singhutsav'     // Replace with your HackerRank username
     },
 
     // API endpoints (using public APIs and proxies)
