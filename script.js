@@ -119,13 +119,15 @@ window.addEventListener('scroll', () => {
 // ============================================
 const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('formStatus');
+const CONTACT_FORM_ENDPOINT = 'PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
 
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Contact form is not wired to a backend yet
-    showFormStatus('Coming soon: contact form integration is not connected yet.', 'info');
-    return;
+    if (!CONTACT_FORM_ENDPOINT || CONTACT_FORM_ENDPOINT.includes('PASTE_')) {
+        showFormStatus('Coming soon: add your Google Sheets endpoint to enable submissions.', 'info');
+        return;
+    }
     
     // Get form values
     const name = document.getElementById('name').value.trim();
@@ -152,20 +154,38 @@ contactForm.addEventListener('submit', (e) => {
         return;
     }
     
-    // Simulate form submission
+    // Submit to Google Sheets via Apps Script
     showFormStatus('Sending message...', 'info');
-    
-    // Simulate API call
-    setTimeout(() => {
-        showFormStatus('Message sent successfully! I\'ll get back to you soon.', 'success');
-        contactForm.reset();
-        
-        // Clear success message after 5 seconds
-        setTimeout(() => {
-            formStatus.textContent = '';
-            formStatus.className = 'form-status';
-        }, 5000);
-    }, 1500);
+
+    const payload = new URLSearchParams({
+        name,
+        email,
+        subject,
+        message,
+        timestamp: new Date().toISOString()
+    });
+
+    fetch(CONTACT_FORM_ENDPOINT, {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: payload.toString()
+    })
+        .then((response) => {
+            if (!response.ok) throw new Error('Failed to submit');
+            return response.text();
+        })
+        .then(() => {
+            showFormStatus('Message sent successfully! I\'ll get back to you soon.', 'success');
+            contactForm.reset();
+            setTimeout(() => {
+                formStatus.textContent = '';
+                formStatus.className = 'form-status';
+            }, 5000);
+        })
+        .catch(() => {
+            showFormStatus('Submission failed. Please try again later.', 'error');
+        });
 });
 
 function showFormStatus(message, type) {
@@ -189,12 +209,8 @@ const downloadResumeBtn = document.getElementById('downloadResume');
 
 downloadResumeBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    
-    // Alert user that resume link needs to be updated
-    alert('Please add your resume PDF file to the project folder and update the link in script.js');
-    
-    // Uncomment and update the following line with your actual resume file path
-    // window.open('path/to/your/resume.pdf', '_blank');
+
+    window.open('assets/resume.pdf', '_blank');
 });
 
 // ============================================
@@ -357,3 +373,29 @@ if (typeof DSA_CONFIG !== 'undefined' && typeof DSATracker !== 'undefined') {
         dsaTracker.fetchAllStats();
     }, 30 * 60 * 1000);
 }
+
+// ============================================
+// Project Metrics (GitHub Stars)
+// ============================================
+const projectMetricElements = document.querySelectorAll('.project-metrics[data-repo]');
+
+async function fetchRepoStars(repo) {
+    const url = `https://api.github.com/repos/${repo}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('GitHub API error');
+    const data = await response.json();
+    return data.stargazers_count ?? 0;
+}
+
+projectMetricElements.forEach(async (el) => {
+    const repo = el.getAttribute('data-repo');
+    if (!repo) return;
+    const starEl = el.querySelector('[data-star-count]');
+    if (!starEl) return;
+    try {
+        const stars = await fetchRepoStars(repo);
+        starEl.textContent = stars;
+    } catch (error) {
+        starEl.textContent = 'N/A';
+    }
+});

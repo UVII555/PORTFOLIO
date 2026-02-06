@@ -876,6 +876,33 @@ section {
     margin: var(--spacing-xs) 0;
 }
 
+.project-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    justify-content: center;
+    margin: var(--spacing-sm) 0;
+}
+
+.metric {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+}
+
+.metric-value {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.metric-value.coming-soon {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
 .stat-label {
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
