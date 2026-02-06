@@ -119,7 +119,7 @@ window.addEventListener('scroll', () => {
 // ============================================
 const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('formStatus');
-const CONTACT_FORM_ENDPOINT = 'PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+const CONTACT_FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyM4fC6SrVTphRMoO7F8IbnooKnkJ6f413v1BjYa6OpON2QJtJcR8qVBadPu58UhadegQ/exec';
 
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
