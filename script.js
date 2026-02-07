@@ -421,3 +421,144 @@ projectMetricElements.forEach(async (el) => {
         starEl.textContent = 'N/A';
     }
 });
+
+// ============================================
+// Tech Journal (local edit + drag/drop)
+// ============================================
+const journalGrid = document.querySelector('.journal-grid');
+const journalAdminToggle = document.getElementById('journalAdminToggle');
+const journalAdminPanel = document.getElementById('journalAdminPanel');
+const journalAddBtn = document.getElementById('journalAddBtn');
+const journalSaveBtn = document.getElementById('journalSaveBtn');
+const journalTitle = document.getElementById('journalTitle');
+const journalTag = document.getElementById('journalTag');
+const journalBody = document.getElementById('journalBody');
+const JOURNAL_KEY = 'tech_journal_posts';
+
+function defaultJournalPosts() {
+    return Array.from(journalGrid.querySelectorAll('.journal-card')).map(card => ({
+        tag: card.querySelector('.journal-tag')?.textContent || '',
+        title: card.querySelector('h3')?.textContent || '',
+        body: card.querySelector('p')?.textContent || '',
+        meta: card.querySelector('.journal-meta')?.textContent || ''
+    }));
+}
+
+function renderJournal(posts) {
+    if (!journalGrid) return;
+    journalGrid.innerHTML = posts.map((post, idx) => `
+        <div class="journal-card" draggable="true" data-index="${idx}">
+            <div class="journal-tag">${post.tag}</div>
+            <h3 contenteditable="true">${post.title}</h3>
+            <p contenteditable="true">${post.body}</p>
+            <div class="journal-meta" contenteditable="true">${post.meta}</div>
+        </div>
+    `).join('');
+}
+
+function loadJournal() {
+    try {
+        const stored = localStorage.getItem(JOURNAL_KEY);
+        if (stored) {
+            renderJournal(JSON.parse(stored));
+            return;
+        }
+    } catch (e) {}
+    renderJournal(defaultJournalPosts());
+}
+
+function saveJournal() {
+    const cards = Array.from(journalGrid.querySelectorAll('.journal-card'));
+    const posts = cards.map(card => ({
+        tag: card.querySelector('.journal-tag')?.textContent.trim() || '',
+        title: card.querySelector('h3')?.textContent.trim() || '',
+        body: card.querySelector('p')?.textContent.trim() || '',
+        meta: card.querySelector('.journal-meta')?.textContent.trim() || ''
+    }));
+    localStorage.setItem(JOURNAL_KEY, JSON.stringify(posts));
+    showToast('Journal saved locally.', 'success');
+}
+
+function enableAdminIfRequested() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === '1') {
+        journalAdminToggle.style.display = 'inline-flex';
+    } else {
+        journalAdminToggle.style.display = 'none';
+    }
+}
+
+let dragIndex = null;
+function setupDragAndDrop() {
+    if (!journalGrid) return;
+    journalGrid.addEventListener('dragstart', (e) => {
+        const card = e.target.closest('.journal-card');
+        if (!card) return;
+        dragIndex = Number(card.dataset.index);
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    journalGrid.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    });
+    journalGrid.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const target = e.target.closest('.journal-card');
+        if (!target) return;
+        const dropIndex = Number(target.dataset.index);
+        const posts = Array.from(journalGrid.querySelectorAll('.journal-card')).map(card => ({
+            tag: card.querySelector('.journal-tag')?.textContent || '',
+            title: card.querySelector('h3')?.textContent || '',
+            body: card.querySelector('p')?.textContent || '',
+            meta: card.querySelector('.journal-meta')?.textContent || ''
+        }));
+        if (dragIndex === null || dropIndex === dragIndex) return;
+        const [moved] = posts.splice(dragIndex, 1);
+        posts.splice(dropIndex, 0, moved);
+        renderJournal(posts);
+        setupDragAndDrop();
+    });
+}
+
+if (journalGrid) {
+    loadJournal();
+    enableAdminIfRequested();
+    setupDragAndDrop();
+}
+
+if (journalAdminToggle) {
+    journalAdminToggle.addEventListener('click', () => {
+        journalAdminPanel.classList.toggle('show');
+    });
+}
+
+if (journalAddBtn) {
+    journalAddBtn.addEventListener('click', () => {
+        if (!journalTitle.value.trim() || !journalBody.value.trim()) {
+            showToast('Add a title and short note.', 'info');
+            return;
+        }
+        const posts = Array.from(journalGrid.querySelectorAll('.journal-card')).map(card => ({
+            tag: card.querySelector('.journal-tag')?.textContent || '',
+            title: card.querySelector('h3')?.textContent || '',
+            body: card.querySelector('p')?.textContent || '',
+            meta: card.querySelector('.journal-meta')?.textContent || ''
+        }));
+        posts.unshift({
+            tag: journalTag.value.trim() || 'Note',
+            title: journalTitle.value.trim(),
+            body: journalBody.value.trim(),
+            meta: 'Added just now'
+        });
+        renderJournal(posts);
+        setupDragAndDrop();
+        journalTitle.value = '';
+        journalTag.value = '';
+        journalBody.value = '';
+        showToast('Post added. Click Save to keep it.', 'success');
+    });
+}
+
+if (journalSaveBtn) {
+    journalSaveBtn.addEventListener('click', saveJournal);
+}

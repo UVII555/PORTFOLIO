@@ -500,6 +500,20 @@
         <div class="container">
             <h2 class="section-title">Tech Journal</h2>
             <p class="section-subtitle">Short, practical notes from what I’m building and learning</p>
+            <div class="journal-admin-bar">
+                <button id="journalAdminToggle" class="btn btn-outline">Manage Posts</button>
+            </div>
+            <div id="journalAdminPanel" class="journal-admin-panel">
+                <h3>Add a New Post</h3>
+                <div class="journal-form">
+                    <input type="text" id="journalTitle" placeholder="Title" maxlength="80">
+                    <input type="text" id="journalTag" placeholder="Tag (e.g., DSA, Cloud)" maxlength="20">
+                    <textarea id="journalBody" rows="3" placeholder="Short note"></textarea>
+                    <button id="journalAddBtn" class="btn btn-primary">Add Post</button>
+                </div>
+                <p class="journal-hint">Drag cards to reorder. Click a card to edit, and press Save.</p>
+                <button id="journalSaveBtn" class="btn btn-secondary">Save Changes</button>
+            </div>
             <div class="journal-grid">
                 <div class="journal-card">
                     <div class="journal-tag">DSA</div>
@@ -631,7 +645,6 @@
 
                 <form class="contact-form" id="contactForm">
                     <h3>Send a Message</h3>
-                    <p class="form-status info">Connected to Google Sheets for free storage.</p>
                     <div class="honeypot-field" aria-hidden="true">
                         <label for="website">Website</label>
                         <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
