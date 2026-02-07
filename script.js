@@ -434,6 +434,8 @@ const journalTitle = document.getElementById('journalTitle');
 const journalTag = document.getElementById('journalTag');
 const journalBody = document.getElementById('journalBody');
 const JOURNAL_KEY = 'tech_journal_posts';
+const JOURNAL_ENDPOINT = 'PASTE_JOURNAL_APPS_SCRIPT_WEB_APP_URL';
+const JOURNAL_ADMIN_PASSWORD = 'PASTE_ADMIN_PASSWORD';
 
 function defaultJournalPosts() {
     return Array.from(journalGrid.querySelectorAll('.journal-card')).map(card => ({
@@ -456,7 +458,21 @@ function renderJournal(posts) {
     `).join('');
 }
 
-function loadJournal() {
+async function loadJournal() {
+    if (JOURNAL_ENDPOINT && !JOURNAL_ENDPOINT.includes('PASTE_')) {
+        try {
+            const response = await fetch(`${JOURNAL_ENDPOINT}?mode=read`);
+            if (response.ok) {
+                const data = await response.json();
+                if (Array.isArray(data.posts)) {
+                    renderJournal(data.posts);
+                    return;
+                }
+            }
+        } catch (e) {
+            // fallback to local
+        }
+    }
     try {
         const stored = localStorage.getItem(JOURNAL_KEY);
         if (stored) {
@@ -467,7 +483,7 @@ function loadJournal() {
     renderJournal(defaultJournalPosts());
 }
 
-function saveJournal() {
+async function saveJournal() {
     const cards = Array.from(journalGrid.querySelectorAll('.journal-card'));
     const posts = cards.map(card => ({
         tag: card.querySelector('.journal-tag')?.textContent.trim() || '',
@@ -475,8 +491,27 @@ function saveJournal() {
         body: card.querySelector('p')?.textContent.trim() || '',
         meta: card.querySelector('.journal-meta')?.textContent.trim() || ''
     }));
+    if (JOURNAL_ENDPOINT && !JOURNAL_ENDPOINT.includes('PASTE_')) {
+        try {
+            const response = await fetch(JOURNAL_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mode: 'write',
+                    password: JOURNAL_ADMIN_PASSWORD,
+                    posts
+                })
+            });
+            if (response.ok) {
+                showToast('Journal saved for all visitors.', 'success');
+                return;
+            }
+        } catch (e) {
+            // fallback to local
+        }
+    }
     localStorage.setItem(JOURNAL_KEY, JSON.stringify(posts));
-    showToast('Journal saved locally.', 'success');
+    showToast('Journal saved locally (set endpoint for global).', 'info');
 }
 
 function enableAdminIfRequested() {
@@ -528,6 +563,19 @@ if (journalGrid) {
 
 if (journalAdminToggle) {
     journalAdminToggle.addEventListener('click', () => {
+        if (!JOURNAL_ADMIN_PASSWORD || JOURNAL_ADMIN_PASSWORD.includes('PASTE_')) {
+            showToast('Set admin password in script.js first.', 'info');
+            return;
+        }
+        const ok = sessionStorage.getItem('journal_admin') === '1';
+        if (!ok) {
+            const entered = window.prompt('Enter admin password');
+            if (entered !== JOURNAL_ADMIN_PASSWORD) {
+                showToast('Incorrect password.', 'error');
+                return;
+            }
+            sessionStorage.setItem('journal_admin', '1');
+        }
         journalAdminPanel.classList.toggle('show');
     });
 }
