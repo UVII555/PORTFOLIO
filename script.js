@@ -518,6 +518,9 @@ const journalAdminToggle = document.getElementById('journalAdminToggle');
 const journalAdminPanel = document.getElementById('journalAdminPanel');
 const journalAddBtn = document.getElementById('journalAddBtn');
 const journalSaveBtn = document.getElementById('journalSaveBtn');
+const sectionToggleInputs = document.querySelectorAll('[data-toggle-section]');
+const saveSectionVisibilityBtn = document.getElementById('saveSectionVisibility');
+const SECTION_VISIBILITY_KEY = 'section_visibility';
 const journalTitle = document.getElementById('journalTitle');
 const journalTag = document.getElementById('journalTag');
 const journalBody = document.getElementById('journalBody');
@@ -655,6 +658,22 @@ if (journalGrid) {
     setupDragAndDrop();
 }
 
+function applySectionVisibility() {
+    const raw = localStorage.getItem(SECTION_VISIBILITY_KEY);
+    const visibility = raw ? JSON.parse(raw) : {};
+    sectionToggleInputs.forEach(input => {
+        const id = input.getAttribute('data-toggle-section');
+        const isVisible = visibility[id] !== false;
+        input.checked = isVisible;
+        const section = document.getElementById(id);
+        if (section) {
+            section.classList.toggle('section-hidden', !isVisible);
+        }
+    });
+}
+
+applySectionVisibility();
+
 const adminOnlyEls = document.querySelectorAll('[data-admin-only]');
 function toggleAdminOnly() {
     const isAdmin = sessionStorage.getItem('journal_admin') === '1';
@@ -669,6 +688,19 @@ if (journalAdminToggle) {
     journalAdminToggle.addEventListener('click', () => {
         journalAdminPanel.classList.toggle('show');
         toggleAdminOnly();
+    });
+}
+
+if (saveSectionVisibilityBtn) {
+    saveSectionVisibilityBtn.addEventListener('click', () => {
+        const visibility = {};
+        sectionToggleInputs.forEach(input => {
+            const id = input.getAttribute('data-toggle-section');
+            visibility[id] = input.checked;
+        });
+        localStorage.setItem(SECTION_VISIBILITY_KEY, JSON.stringify(visibility));
+        applySectionVisibility();
+        showToast('Section visibility updated.', 'success');
     });
 }
 

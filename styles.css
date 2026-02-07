@@ -1092,6 +1092,32 @@ section {
     display: block;
 }
 
+.journal-section-toggles {
+    margin-bottom: var(--spacing-md);
+    display: grid;
+    gap: var(--spacing-xs);
+}
+
+.journal-section-toggles h4 {
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.journal-section-toggles label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+}
+
+.journal-section-toggles button {
+    width: fit-content;
+}
+
+.section-hidden {
+    display: none !important;
+}
+
 .journal-form {
     display: grid;
     gap: var(--spacing-sm);

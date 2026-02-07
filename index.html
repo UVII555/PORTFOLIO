@@ -549,6 +549,19 @@
             </div>
             <div id="journalAdminPanel" class="journal-admin-panel">
                 <h3>Add a New Post</h3>
+                <div class="journal-section-toggles">
+                    <h4>Show/Hide Sections</h4>
+                    <label><input type="checkbox" data-toggle-section="about" checked> About</label>
+                    <label><input type="checkbox" data-toggle-section="skills" checked> Skills</label>
+                    <label><input type="checkbox" data-toggle-section="projects" checked> Projects</label>
+                    <label><input type="checkbox" data-toggle-section="dsa-tracker" checked> DSA Tracker</label>
+                    <label><input type="checkbox" data-toggle-section="internships" checked> Internship Targets</label>
+                    <label><input type="checkbox" data-toggle-section="tech-journal" checked> Tech Journal</label>
+                    <label><input type="checkbox" data-toggle-section="education" checked> Education</label>
+                    <label><input type="checkbox" data-toggle-section="achievements" checked> Achievements</label>
+                    <label><input type="checkbox" data-toggle-section="contact" checked> Contact</label>
+                    <button id="saveSectionVisibility" class="btn btn-secondary">Save Section Visibility</button>
+                </div>
                 <div class="journal-form">
                     <input type="text" id="journalTitle" placeholder="Title" maxlength="80">
                     <input type="text" id="journalTag" placeholder="Tag (e.g., DSA, Cloud)" maxlength="20">
