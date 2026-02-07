@@ -126,7 +126,8 @@ const openTrackerModal = document.getElementById('openTrackerModal');
 const closeTrackerModal = document.getElementById('closeTrackerModal');
 const trackerForm = document.getElementById('trackerForm');
 const trackerStatusMsg = document.getElementById('trackerStatusMsg');
-const TRACKER_FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwt3RBZXFYJXkh7CBtmJC4kuoHhU3N0arzXIXn0945RvWcuf7DqA2BoiymOajhKascEww/exec';
+const CMS_ENDPOINT = 'PASTE_CMS_ENDPOINT_HERE';
+const TRACKER_FORM_ENDPOINT = CMS_ENDPOINT;
 
 function showToast(message, type = 'info') {
     if (!toast) return;
@@ -263,6 +264,7 @@ if (trackerForm) {
         }
 
         const payload = new URLSearchParams({
+            mode: 'tracker_append',
             company: document.getElementById('trackerCompany').value.trim(),
             role: document.getElementById('trackerRole').value.trim(),
             link: document.getElementById('trackerLink').value.trim(),
@@ -521,6 +523,20 @@ const journalSaveBtn = document.getElementById('journalSaveBtn');
 const sectionToggleInputs = document.querySelectorAll('[data-toggle-section]');
 const saveSectionVisibilityBtn = document.getElementById('saveSectionVisibility');
 const SECTION_VISIBILITY_KEY = 'section_visibility';
+const cmsJson = document.getElementById('cmsJson');
+const cmsLoadBtn = document.getElementById('cmsLoadBtn');
+const cmsLoadFromPageBtn = document.getElementById('cmsLoadFromPageBtn');
+const cmsApplyBtn = document.getElementById('cmsApplyBtn');
+const cmsSaveBtn = document.getElementById('cmsSaveBtn');
+const trackerFilterStatus = document.getElementById('trackerFilterStatus');
+const trackerFilterWindow = document.getElementById('trackerFilterWindow');
+const trackerFilterFollowUp = document.getElementById('trackerFilterFollowUp');
+const trackerRefreshBtn = document.getElementById('trackerRefreshBtn');
+const trackerStats = document.getElementById('trackerStats');
+const trackerTableBody = document.getElementById('trackerTableBody');
+const CMS_CACHE_KEY = 'cms_content_cache';
+let cmsState = null;
+let trackerRows = [];
 const journalTitle = document.getElementById('journalTitle');
 const journalTag = document.getElementById('journalTag');
 const journalBody = document.getElementById('journalBody');
@@ -674,6 +690,219 @@ function applySectionVisibility() {
 
 applySectionVisibility();
 
+function getTextContent(el) {
+    return el ? el.textContent.trim() : '';
+}
+
+function collectCmsFromPage() {
+    const aboutParas = Array.from(document.querySelectorAll('#about .about-text p')).map(p => p.textContent.trim());
+    const aboutStats = Array.from(document.querySelectorAll('#about .stat-item')).map(item => ({
+        value: getTextContent(item.querySelector('h4')),
+        label: getTextContent(item.querySelector('p'))
+    }));
+    const skills = Array.from(document.querySelectorAll('.skills-grid .skill-category')).map(cat => ({
+        title: getTextContent(cat.querySelector('h3')),
+        tags: Array.from(cat.querySelectorAll('.skill-tag')).map(tag => tag.textContent.trim())
+    }));
+    const projects = Array.from(document.querySelectorAll('.project-card')).map(card => ({
+        title: getTextContent(card.querySelector('h3')),
+        description: getTextContent(card.querySelector('.project-description')),
+        tech: Array.from(card.querySelectorAll('.project-tech .tech-badge')).map(t => t.textContent.trim()),
+        learnings: Array.from(card.querySelectorAll('.project-learning li')).map(li => li.textContent.trim()),
+        repo: card.querySelector('.project-links a')?.getAttribute('href') || ''
+    }));
+    const achievements = Array.from(document.querySelectorAll('.achievement-card')).map(card => ({
+        title: getTextContent(card.querySelector('h3')),
+        description: getTextContent(card.querySelector('p')),
+        badge: getTextContent(card.querySelector('.stat-badge'))
+    }));
+    const internshipsColumns = Array.from(document.querySelectorAll('#internships .target-column')).map(col => ({
+        title: getTextContent(col.querySelector('h3')),
+        items: Array.from(col.querySelectorAll('li')).map(li => ({
+            name: getTextContent(li.querySelector('span')),
+            link: li.querySelector('a')?.getAttribute('href') || '',
+            label: getTextContent(li.querySelector('a'))
+        }))
+    }));
+    const sectionVisibility = {};
+    sectionToggleInputs.forEach(input => {
+        sectionVisibility[input.getAttribute('data-toggle-section')] = input.checked;
+    });
+
+    return {
+        hero: {
+            subtitle: getTextContent(document.querySelector('.hero-subtitle')),
+            tagline: getTextContent(document.querySelector('.hero-tagline'))
+        },
+        about: {
+            headline: getTextContent(document.querySelector('#about h3')),
+            paragraphs: aboutParas,
+            stats: aboutStats
+        },
+        skills,
+        projects,
+        internships: {
+            subtitle: getTextContent(document.querySelector('#internships .section-subtitle')),
+            columns: internshipsColumns
+        },
+        achievements,
+        contact: {
+            subtitle: getTextContent(document.querySelector('#contact .section-subtitle')),
+            location: getTextContent(document.querySelector('#contact .contact-item p'))
+        },
+        sectionVisibility
+    };
+}
+
+function applyCmsToPage(cms) {
+    if (!cms) return;
+    if (cms.hero) {
+        const subtitleEl = document.querySelector('.hero-subtitle');
+        const taglineEl = document.querySelector('.hero-tagline');
+        if (subtitleEl && cms.hero.subtitle) subtitleEl.textContent = cms.hero.subtitle;
+        if (taglineEl && cms.hero.tagline) taglineEl.textContent = cms.hero.tagline;
+    }
+    if (cms.about) {
+        const h3 = document.querySelector('#about h3');
+        if (h3 && cms.about.headline) h3.textContent = cms.about.headline;
+        const paras = document.querySelectorAll('#about .about-text p');
+        if (cms.about.paragraphs && cms.about.paragraphs.length) {
+            cms.about.paragraphs.forEach((text, idx) => {
+                if (paras[idx]) paras[idx].textContent = text;
+            });
+        }
+        if (cms.about.stats && cms.about.stats.length) {
+            const stats = document.querySelectorAll('#about .stat-item');
+            cms.about.stats.forEach((stat, idx) => {
+                const item = stats[idx];
+                if (!item) return;
+                const val = item.querySelector('h4');
+                const label = item.querySelector('p');
+                if (val && stat.value) val.textContent = stat.value;
+                if (label && stat.label) label.textContent = stat.label;
+            });
+        }
+    }
+    if (cms.skills && cms.skills.length) {
+        const cats = document.querySelectorAll('.skills-grid .skill-category');
+        cms.skills.forEach((skill, idx) => {
+            const cat = cats[idx];
+            if (!cat) return;
+            const title = cat.querySelector('h3');
+            if (title && skill.title) title.textContent = skill.title;
+            const tagsWrap = cat.querySelector('.skill-tags');
+            if (tagsWrap && skill.tags) {
+                tagsWrap.innerHTML = skill.tags.map(tag => `<span class="skill-tag">${tag}</span>`).join('');
+            }
+        });
+    }
+    if (cms.projects && cms.projects.length) {
+        const cards = document.querySelectorAll('.project-card');
+        cms.projects.forEach((proj, idx) => {
+            const card = cards[idx];
+            if (!card) return;
+            const title = card.querySelector('h3');
+            const desc = card.querySelector('.project-description');
+            if (title && proj.title) title.textContent = proj.title;
+            if (desc && proj.description) desc.textContent = proj.description;
+            const techWrap = card.querySelector('.project-tech');
+            if (techWrap && proj.tech) {
+                techWrap.innerHTML = proj.tech.map(t => `<span class="tech-badge">${t}</span>`).join('');
+            }
+            const learnWrap = card.querySelector('.project-learning ul');
+            if (learnWrap && proj.learnings) {
+                learnWrap.innerHTML = proj.learnings.map(l => `<li>${l}</li>`).join('');
+            }
+            const repoLink = card.querySelector('.project-links a');
+            if (repoLink && proj.repo) repoLink.setAttribute('href', proj.repo);
+        });
+    }
+    if (cms.internships) {
+        const subtitle = document.querySelector('#internships .section-subtitle');
+        if (subtitle && cms.internships.subtitle) subtitle.textContent = cms.internships.subtitle;
+        const cols = document.querySelectorAll('#internships .target-column');
+        cms.internships.columns?.forEach((col, idx) => {
+            const el = cols[idx];
+            if (!el) return;
+            const title = el.querySelector('h3');
+            if (title && col.title) title.textContent = col.title;
+            const list = el.querySelector('ul');
+            if (list && col.items) {
+                list.innerHTML = col.items.map(item => `<li><span>${item.name}</span><a href="${item.link}" target="_blank" rel="noopener">${item.label || 'Link'}</a></li>`).join('');
+            }
+        });
+    }
+    if (cms.achievements && cms.achievements.length) {
+        const cards = document.querySelectorAll('.achievement-card');
+        cms.achievements.forEach((ach, idx) => {
+            const card = cards[idx];
+            if (!card) return;
+            const title = card.querySelector('h3');
+            const desc = card.querySelector('p');
+            const badge = card.querySelector('.stat-badge');
+            if (title && ach.title) title.textContent = ach.title;
+            if (desc && ach.description) desc.textContent = ach.description;
+            if (badge && ach.badge) badge.textContent = ach.badge;
+        });
+    }
+    if (cms.contact) {
+        const subtitle = document.querySelector('#contact .section-subtitle');
+        if (subtitle && cms.contact.subtitle) subtitle.textContent = cms.contact.subtitle;
+        const loc = document.querySelector('#contact .contact-item p');
+        if (loc && cms.contact.location) loc.textContent = cms.contact.location;
+    }
+    if (cms.sectionVisibility) {
+        localStorage.setItem(SECTION_VISIBILITY_KEY, JSON.stringify(cms.sectionVisibility));
+        applySectionVisibility();
+    }
+}
+
+async function loadCmsFromSheet() {
+    if (!CMS_ENDPOINT || CMS_ENDPOINT.includes('PASTE_')) {
+        showToast('Set CMS endpoint to load content.', 'info');
+        return;
+    }
+    const res = await fetch(`${CMS_ENDPOINT}?mode=cms_read`);
+    if (!res.ok) throw new Error('CMS load failed');
+    const data = await res.json();
+    cmsState = data.cms || null;
+    if (cmsState) {
+        localStorage.setItem(CMS_CACHE_KEY, JSON.stringify(cmsState));
+        applyCmsToPage(cmsState);
+        if (cmsJson) cmsJson.value = JSON.stringify(cmsState, null, 2);
+    }
+}
+
+function loadCmsFromCache() {
+    const raw = localStorage.getItem(CMS_CACHE_KEY);
+    if (!raw) return;
+    try {
+        cmsState = JSON.parse(raw);
+        applyCmsToPage(cmsState);
+        if (cmsJson) cmsJson.value = JSON.stringify(cmsState, null, 2);
+    } catch (e) {
+        // ignore
+    }
+}
+
+async function saveCmsToSheet(cms) {
+    if (!CMS_ENDPOINT || CMS_ENDPOINT.includes('PASTE_')) {
+        showToast('Set CMS endpoint to save content.', 'info');
+        return;
+    }
+    const res = await fetch(CMS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'cms_write', cms })
+    });
+    if (!res.ok) throw new Error('CMS save failed');
+    localStorage.setItem(CMS_CACHE_KEY, JSON.stringify(cms));
+    showToast('CMS saved.', 'success');
+}
+
+loadCmsFromCache();
+loadCmsFromSheet().catch(() => {});
+
 const adminOnlyEls = document.querySelectorAll('[data-admin-only]');
 function toggleAdminOnly() {
     const isAdmin = sessionStorage.getItem('journal_admin') === '1';
@@ -688,6 +917,9 @@ if (journalAdminToggle) {
     journalAdminToggle.addEventListener('click', () => {
         journalAdminPanel.classList.toggle('show');
         toggleAdminOnly();
+        if (journalAdminPanel.classList.contains('show')) {
+            loadTrackerRows().catch(() => {});
+        }
     });
 }
 
@@ -700,9 +932,154 @@ if (saveSectionVisibilityBtn) {
         });
         localStorage.setItem(SECTION_VISIBILITY_KEY, JSON.stringify(visibility));
         applySectionVisibility();
-        showToast('Section visibility updated.', 'success');
+        if (cmsState) {
+            cmsState.sectionVisibility = visibility;
+            saveCmsToSheet(cmsState).catch(() => {
+                showToast('Visibility saved locally.', 'info');
+            });
+        } else {
+            showToast('Section visibility updated.', 'success');
+        }
     });
 }
+
+if (cmsLoadBtn) {
+    cmsLoadBtn.addEventListener('click', () => {
+        loadCmsFromSheet().catch(() => showToast('Failed to load CMS.', 'error'));
+    });
+}
+
+if (cmsLoadFromPageBtn) {
+    cmsLoadFromPageBtn.addEventListener('click', () => {
+        const cms = collectCmsFromPage();
+        cmsState = cms;
+        if (cmsJson) cmsJson.value = JSON.stringify(cms, null, 2);
+        showToast('Loaded content from page.', 'success');
+    });
+}
+
+if (cmsApplyBtn) {
+    cmsApplyBtn.addEventListener('click', () => {
+        try {
+            const cms = cmsJson?.value ? JSON.parse(cmsJson.value) : null;
+            if (!cms) return;
+            cmsState = cms;
+            applyCmsToPage(cms);
+            showToast('CMS applied to page.', 'success');
+        } catch (e) {
+            showToast('Invalid CMS JSON.', 'error');
+        }
+    });
+}
+
+if (cmsSaveBtn) {
+    cmsSaveBtn.addEventListener('click', () => {
+        try {
+            const cms = cmsJson?.value ? JSON.parse(cmsJson.value) : null;
+            if (!cms) return;
+            cmsState = cms;
+            saveCmsToSheet(cms).catch(() => showToast('CMS save failed.', 'error'));
+        } catch (e) {
+            showToast('Invalid CMS JSON.', 'error');
+        }
+    });
+}
+
+function normalizeDate(value) {
+    if (!value) return null;
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function computeTrackerStats(rows, daysWindow) {
+    const now = new Date();
+    const since = daysWindow === 'all' ? null : new Date(now.getTime() - Number(daysWindow) * 86400000);
+    const filtered = rows.filter(r => {
+        const d = normalizeDate(r.appliedDate || r.timestamp);
+        return !since || (d && d >= since);
+    });
+    const counts = {};
+    filtered.forEach(r => {
+        const key = r.status || 'Unknown';
+        counts[key] = (counts[key] || 0) + 1;
+    });
+    return { counts, total: filtered.length };
+}
+
+function renderTrackerStats(stats) {
+    if (!trackerStats) return;
+    const cards = Object.entries(stats.counts).map(([status, count]) => `
+        <div class="tracker-stat-card">
+            <strong>${status}</strong>
+            <div>${count}</div>
+        </div>
+    `);
+    trackerStats.innerHTML = `
+        <div class="tracker-stat-card"><strong>Total</strong><div>${stats.total}</div></div>
+        ${cards.join('')}
+    `;
+}
+
+function renderTrackerTable(rows) {
+    if (!trackerTableBody) return;
+    trackerTableBody.innerHTML = rows.map(r => `
+        <tr>
+            <td>${r.appliedDate || r.timestamp || ''}</td>
+            <td>${r.company || ''}</td>
+            <td>${r.role || ''}</td>
+            <td>${r.status || ''}</td>
+            <td>${r.followUpDate || ''}</td>
+            <td>${r.link ? `<a href="${r.link}" target="_blank" rel="noopener">Open</a>` : ''}</td>
+        </tr>
+    `).join('');
+}
+
+function filterTrackerRows() {
+    let rows = [...trackerRows];
+    const status = trackerFilterStatus?.value || '';
+    const windowValue = trackerFilterWindow?.value || '7';
+    const followUpOnly = trackerFilterFollowUp?.checked;
+    if (status) {
+        rows = rows.filter(r => (r.status || '') === status);
+    }
+    if (windowValue !== 'all') {
+        const now = new Date();
+        const since = new Date(now.getTime() - Number(windowValue) * 86400000);
+        rows = rows.filter(r => {
+            const d = normalizeDate(r.appliedDate || r.timestamp);
+            return d && d >= since;
+        });
+    }
+    if (followUpOnly) {
+        const now = new Date();
+        rows = rows.filter(r => {
+            const d = normalizeDate(r.followUpDate);
+            return d && d <= now;
+        });
+    }
+    const stats = computeTrackerStats(rows, windowValue);
+    renderTrackerStats(stats);
+    renderTrackerTable(rows);
+}
+
+async function loadTrackerRows() {
+    if (!CMS_ENDPOINT || CMS_ENDPOINT.includes('PASTE_')) return;
+    const res = await fetch(`${CMS_ENDPOINT}?mode=tracker_read`);
+    if (!res.ok) throw new Error('Tracker load failed');
+    const data = await res.json();
+    trackerRows = data.rows || [];
+    filterTrackerRows();
+}
+
+if (trackerRefreshBtn) {
+    trackerRefreshBtn.addEventListener('click', () => {
+        loadTrackerRows().catch(() => showToast('Tracker load failed.', 'error'));
+    });
+}
+
+if (trackerFilterStatus) trackerFilterStatus.addEventListener('change', filterTrackerRows);
+if (trackerFilterWindow) trackerFilterWindow.addEventListener('change', filterTrackerRows);
+if (trackerFilterFollowUp) trackerFilterFollowUp.addEventListener('change', filterTrackerRows);
 
 async function requestOtp(adminId) {
     try {

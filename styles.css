@@ -1118,6 +1118,99 @@ section {
     display: none !important;
 }
 
+.cms-editor {
+    margin-bottom: var(--spacing-md);
+    display: grid;
+    gap: var(--spacing-xs);
+}
+
+.cms-editor textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.cms-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.tracker-dashboard {
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--spacing-sm);
+    background: var(--bg-secondary);
+}
+
+.tracker-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.tracker-filters select {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.tracker-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+}
+
+.tracker-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
+.tracker-stat-card {
+    background: var(--bg-primary);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+}
+
+.tracker-table-wrap {
+    overflow-x: auto;
+}
+
+.tracker-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.tracker-table th,
+.tracker-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.tracker-table a {
+    color: var(--accent-primary);
+    text-decoration: none;
+}
+
+.tracker-table a:hover {
+    text-decoration: underline;
+}
+
 .journal-form {
     display: grid;
     gap: var(--spacing-sm);

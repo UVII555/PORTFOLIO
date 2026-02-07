@@ -1,6 +1,6 @@
 # Application Tracker Setup (Google Sheets)
 
-This adds a simple form endpoint that appends rows to your tracker sheet.
+This is superseded by `CMS_SETUP.md` if you want one endpoint for CMS + tracker.
 
 ## 1) Create a Google Sheet
 Create a sheet named `Applications` with these header columns in row 1:
