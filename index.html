@@ -30,6 +30,7 @@
                     <li><a href="#skills" class="nav-link">Skills</a></li>
                     <li><a href="#projects" class="nav-link">Projects</a></li>
                     <li><a href="#dsa-tracker" class="nav-link">DSA Tracker</a></li>
+                    <li><a href="#tech-journal" class="nav-link">Journal</a></li>
                     <li><a href="#education" class="nav-link">Education</a></li>
                     <li><a href="#achievements" class="nav-link">Achievements</a></li>
                     <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -46,8 +47,8 @@
                     <h1 class="hero-title">
                         Hi, I'm <span class="gradient-text">Utsav Singh</span>
                     </h1>
-                    <h2 class="hero-subtitle">Computer Science Undergraduate</h2>
-                    <p class="hero-tagline">Aspiring Software Engineer | Java | DSA | Web Development</p>
+                    <h2 class="hero-subtitle">Actively Seeking Software Engineering Internships</h2>
+                    <p class="hero-tagline">Cloud-focused CS undergrad building real projects, shipping features, and practicing DSA daily.</p>
                     <div class="hero-cta">
                         <a href="#projects" class="btn btn-primary">View Projects</a>
                         <a href="#" class="btn btn-secondary" id="downloadResume">Download Resume</a>
@@ -418,7 +419,7 @@
                         <p>Total Problems Solved</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card easy">
                     <div class="stat-icon">
                         <i class="fas fa-check-circle"></i>
@@ -428,7 +429,7 @@
                         <p>Easy</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card medium">
                     <div class="stat-icon">
                         <i class="fas fa-fire"></i>
@@ -438,7 +439,7 @@
                         <p>Medium</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card hard">
                     <div class="stat-icon">
                         <i class="fas fa-star"></i>
@@ -446,6 +447,16 @@
                     <div class="stat-content">
                         <h3 id="dsa-hard">0</h3>
                         <p>Hard</p>
+                    </div>
+                </div>
+
+                <div class="stat-card streak">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire-flame-curved"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="dsa-streak">0</h3>
+                        <p>Daily Streak (days)</p>
                     </div>
                 </div>
             </div>
@@ -480,6 +491,46 @@
             <div class="setup-notice">
                 <i class="fas fa-info-circle"></i>
                 <span>Configure your usernames in <code>dsa-config.js</code> to enable live tracking</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Journal Section -->
+    <section id="tech-journal" class="tech-journal">
+        <div class="container">
+            <h2 class="section-title">Tech Journal</h2>
+            <p class="section-subtitle">Short, practical notes from what I’m building and learning</p>
+            <div class="journal-grid">
+                <div class="journal-card">
+                    <div class="journal-tag">DSA</div>
+                    <h3>From 0 to Consistent: My Daily Streak System</h3>
+                    <p>I track daily practice with a simple checklist and push solved problems to GitHub. Consistency beats intensity.</p>
+                    <div class="journal-meta">Takeaway: small wins compound.</div>
+                </div>
+                <div class="journal-card">
+                    <div class="journal-tag">Backend</div>
+                    <h3>Building a Real-Time Hacker News Pipeline</h3>
+                    <p>Fetching stories + comments, cleaning text, and preparing it for analysis taught me a lot about data quality.</p>
+                    <div class="journal-meta">Focus: reliability + modularity.</div>
+                </div>
+                <div class="journal-card">
+                    <div class="journal-tag">Cloud</div>
+                    <h3>What I Learned from AWS Basics</h3>
+                    <p>Understanding IAM and VPC early helped me build safer systems and avoid permission mistakes.</p>
+                    <div class="journal-meta">Next: deployment automation.</div>
+                </div>
+                <div class="journal-card">
+                    <div class="journal-tag">Frontend</div>
+                    <h3>Fast UI, Clean UX: Lessons from My Portfolio</h3>
+                    <p>Small UI decisions (spacing, contrast, hierarchy) dramatically improve how projects are perceived.</p>
+                    <div class="journal-meta">Rule: clarity beats complexity.</div>
+                </div>
+                <div class="journal-card">
+                    <div class="journal-tag">Systems</div>
+                    <h3>Why I Care About Core CS Fundamentals</h3>
+                    <p>OS + DBMS concepts helped me reason about performance, concurrency, and scalability.</p>
+                    <div class="journal-meta">Goal: become a strong engineer, not just a coder.</div>
+                </div>
             </div>
         </div>
     </section>
@@ -541,6 +592,10 @@
         <div class="container">
             <h2 class="section-title">Get In Touch</h2>
             <p class="section-subtitle">I'm currently seeking internship opportunities. Let's connect!</p>
+            <div class="contact-badges">
+                <span class="contact-badge">Response time: 1–2 days</span>
+                <span class="contact-badge">Stored securely in Google Sheets</span>
+            </div>
             <div class="contact-wrapper">
                 <div class="contact-info">
                     <h3>Contact Information</h3>
@@ -576,7 +631,7 @@
 
                 <form class="contact-form" id="contactForm">
                     <h3>Send a Message</h3>
-                    <p class="form-status info">Connect this form to Google Sheets for free storage.</p>
+                    <p class="form-status info">Connected to Google Sheets for free storage.</p>
                     <div class="honeypot-field" aria-hidden="true">
                         <label for="website">Website</label>
                         <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">

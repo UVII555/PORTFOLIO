@@ -107,7 +107,7 @@ class DSATracker {
 
         try {
             const recentConfig = this.config.leetcodeRecent || {};
-            const limit = Number(recentConfig.limit || 5);
+            const limit = Number(recentConfig.limit || 20);
             const endpoint = recentConfig.proxy || this.config.apis.leetcodeGraphQL;
 
             const body = {
@@ -139,6 +139,8 @@ class DSATracker {
                 titleSlug: item.titleSlug,
                 timestamp: Number(item.timestamp) * 1000
             }));
+
+            this.stats.streakDays = this.calculateStreakDays(this.stats.recentProblems);
 
             console.log('✅ LeetCode recent problems fetched');
         } catch (error) {
@@ -253,6 +255,9 @@ class DSATracker {
         // Update recent LeetCode problems
         this.updateRecentProblemsUI();
 
+        // Update streak
+        this.updateStreakUI();
+
         // Update last updated time
         this.updateTimestamp();
 
@@ -344,6 +349,8 @@ class DSATracker {
         if (!listElement) return;
 
         const items = this.stats.recentProblems || [];
+        const maxItems = (this.config.display && this.config.display.maxRecentProblems) || 5;
+        const limited = items.slice(0, maxItems);
         if (!items.length) {
             listElement.innerHTML = `
                 <li class="loading-placeholder">
@@ -354,7 +361,7 @@ class DSATracker {
             return;
         }
 
-        listElement.innerHTML = items.map(item => {
+        listElement.innerHTML = limited.map(item => {
             const date = item.timestamp ? new Date(item.timestamp).toLocaleString() : 'Unknown time';
             const link = item.titleSlug ? `https://leetcode.com/problems/${item.titleSlug}/` : '#';
             return `
@@ -366,6 +373,41 @@ class DSATracker {
                 </li>
             `;
         }).join('');
+    }
+
+    calculateStreakDays(items) {
+        if (!items || !items.length) return 0;
+        const days = new Set(
+            items
+                .map(item => new Date(item.timestamp))
+                .map(d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime())
+        );
+
+        const sortedDays = Array.from(days).sort((a, b) => b - a);
+        if (!sortedDays.length) return 0;
+
+        let streak = 1;
+        let current = sortedDays[0];
+        for (let i = 1; i < sortedDays.length; i++) {
+            const prev = sortedDays[i];
+            const diff = (current - prev) / (1000 * 60 * 60 * 24);
+            if (diff === 1) {
+                streak += 1;
+                current = prev;
+            } else if (diff === 0) {
+                continue;
+            } else {
+                break;
+            }
+        }
+        return streak;
+    }
+
+    updateStreakUI() {
+        const streakEl = document.getElementById('dsa-streak');
+        if (!streakEl) return;
+        const value = Number(this.stats.streakDays || 0);
+        streakEl.textContent = value;
     }
 
     // Update timestamp

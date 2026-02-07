@@ -30,7 +30,7 @@ const DSA_CONFIG = {
 
     // LeetCode recent accepted problems (GraphQL)
     leetcodeRecent: {
-        limit: 5,
+        limit: 20,
         // Optional proxy URL if LeetCode GraphQL is blocked by CORS.
         // Example: 'https://your-netlify-site.netlify.app/.netlify/functions/leetcode'
         proxy: '/.netlify/functions/leetcode'
