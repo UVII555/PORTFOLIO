@@ -14,7 +14,8 @@ PostsJSON
 Extensions -> Apps Script, paste:
 
 ```javascript
-const ADMIN_PASSWORD = "CHANGE_ME";
+const ADMIN_ID = "singhutsav555@gmail.com";
+const ADMIN_PASSWORD = "2401330120206";
 
 function doGet(e) {
   const mode = (e.parameter && e.parameter.mode) || "read";
@@ -31,6 +32,38 @@ function doGet(e) {
 
 function doPost(e) {
   const body = JSON.parse(e.postData.contents || "{}");
+  const mode = body.mode || "write";
+
+  if (mode === "request_otp") {
+    if ((body.adminId || "").toLowerCase() !== ADMIN_ID.toLowerCase()) {
+      return ContentService.createTextOutput(JSON.stringify({ error: "unauthorized" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const props = PropertiesService.getScriptProperties();
+    props.setProperty("otp_code", otp);
+    props.setProperty("otp_expires", (Date.now() + 5 * 60 * 1000).toString());
+    MailApp.sendEmail(ADMIN_ID, "Your OTP Code", "OTP: " + otp + " (valid 5 minutes)");
+    return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (mode === "verify_otp") {
+    const props = PropertiesService.getScriptProperties();
+    const code = props.getProperty("otp_code");
+    const exp = Number(props.getProperty("otp_expires") || "0");
+    if (Date.now() > exp) {
+      return ContentService.createTextOutput(JSON.stringify({ status: "expired" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if ((body.code || "") === code) {
+      return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    return ContentService.createTextOutput(JSON.stringify({ status: "invalid" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   if (body.password !== ADMIN_PASSWORD) {
     return ContentService.createTextOutput(JSON.stringify({ error: "unauthorized" }))
       .setMimeType(ContentService.MimeType.JSON);

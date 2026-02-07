@@ -435,7 +435,9 @@ const journalTag = document.getElementById('journalTag');
 const journalBody = document.getElementById('journalBody');
 const JOURNAL_KEY = 'tech_journal_posts';
 const JOURNAL_ENDPOINT = 'PASTE_JOURNAL_APPS_SCRIPT_WEB_APP_URL';
-const JOURNAL_ADMIN_PASSWORD = 'PASTE_ADMIN_PASSWORD';
+const JOURNAL_ADMIN_ID = 'singhutsav555@gmail.com';
+const JOURNAL_ADMIN_PASSWORD = '2401330120206';
+const JOURNAL_PASSWORD_HINT = 'AKTU NO.';
 
 function defaultJournalPosts() {
     return Array.from(journalGrid.querySelectorAll('.journal-card')).map(card => ({
@@ -564,12 +566,26 @@ if (journalGrid) {
 if (journalAdminToggle) {
     journalAdminToggle.addEventListener('click', () => {
         if (!JOURNAL_ADMIN_PASSWORD || JOURNAL_ADMIN_PASSWORD.includes('PASTE_')) {
-            showToast('Set admin password in script.js first.', 'info');
+            showToast('Set admin credentials in script.js first.', 'info');
             return;
         }
         const ok = sessionStorage.getItem('journal_admin') === '1';
         if (!ok) {
-            const entered = window.prompt('Enter admin password');
+            const idEntered = window.prompt('Enter admin ID');
+            if (!idEntered || idEntered.trim().toLowerCase() !== JOURNAL_ADMIN_ID.toLowerCase()) {
+                showToast('Admin ID not recognized.', 'error');
+                return;
+            }
+
+            const entered = window.prompt('Enter admin password (leave blank for OTP)\\nHint: ' + JOURNAL_PASSWORD_HINT);
+            if (!entered) {
+                if (!JOURNAL_ENDPOINT || JOURNAL_ENDPOINT.includes('PASTE_')) {
+                    showToast('Set journal endpoint to use OTP.', 'info');
+                    return;
+                }
+                requestOtp(idEntered.trim());
+                return;
+            }
             if (entered !== JOURNAL_ADMIN_PASSWORD) {
                 showToast('Incorrect password.', 'error');
                 return;
@@ -578,6 +594,35 @@ if (journalAdminToggle) {
         }
         journalAdminPanel.classList.toggle('show');
     });
+}
+
+async function requestOtp(adminId) {
+    try {
+        const response = await fetch(JOURNAL_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: 'request_otp', adminId })
+        });
+        if (!response.ok) throw new Error('OTP request failed');
+        showToast('OTP sent to your email.', 'success');
+        const code = window.prompt('Enter OTP from email');
+        if (!code) return;
+        const verify = await fetch(JOURNAL_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: 'verify_otp', adminId, code })
+        });
+        const data = await verify.json();
+        if (data && data.status === 'ok') {
+            sessionStorage.setItem('journal_admin', '1');
+            journalAdminPanel.classList.add('show');
+            showToast('Admin access granted.', 'success');
+            return;
+        }
+        showToast('OTP invalid or expired.', 'error');
+    } catch (e) {
+        showToast('OTP flow failed.', 'error');
+    }
 }
 
 if (journalAddBtn) {
