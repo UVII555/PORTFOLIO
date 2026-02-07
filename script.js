@@ -693,6 +693,7 @@ function applySectionVisibility() {
             section.classList.toggle('section-hidden', !isVisible);
         }
     });
+    updateInternshipVisibility();
 }
 
 applySectionVisibility();
@@ -937,7 +938,11 @@ function updateInternshipVisibility() {
     const section = document.getElementById('internships');
     if (!section) return;
     const isTarget = window.location.hash === '#internships';
-    section.classList.toggle('section-hidden', !isTarget);
+    if (isTarget) {
+        section.classList.remove('section-hidden');
+    } else if (!isAdminMode) {
+        section.classList.add('section-hidden');
+    }
 }
 
 window.addEventListener('hashchange', updateInternshipVisibility);
