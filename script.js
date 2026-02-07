@@ -1032,11 +1032,14 @@ function computeTrackerStats(rows, daysWindow) {
         return !since || (d && d >= since);
     });
     const counts = {};
+    let followUpDue = 0;
     filtered.forEach(r => {
         const key = r.status || 'Unknown';
         counts[key] = (counts[key] || 0) + 1;
+        const follow = normalizeDate(r.followUpDate);
+        if (follow && follow <= now) followUpDue += 1;
     });
-    return { counts, total: filtered.length };
+    return { counts, total: filtered.length, followUpDue };
 }
 
 function renderTrackerStats(stats) {
@@ -1049,6 +1052,7 @@ function renderTrackerStats(stats) {
     `);
     trackerStats.innerHTML = `
         <div class="tracker-stat-card"><strong>Total</strong><div>${stats.total}</div></div>
+        <div class="tracker-stat-card"><strong>Follow-ups Due</strong><div>${stats.followUpDue || 0}</div></div>
         ${cards.join('')}
     `;
 }
