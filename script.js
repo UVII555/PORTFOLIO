@@ -126,7 +126,7 @@ const openTrackerModal = document.getElementById('openTrackerModal');
 const closeTrackerModal = document.getElementById('closeTrackerModal');
 const trackerForm = document.getElementById('trackerForm');
 const trackerStatusMsg = document.getElementById('trackerStatusMsg');
-const TRACKER_FORM_ENDPOINT = 'PASTE_TRACKER_ENDPOINT_HERE';
+const TRACKER_FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwt3RBZXFYJXkh7CBtmJC4kuoHhU3N0arzXIXn0945RvWcuf7DqA2BoiymOajhKascEww/exec';
 
 function showToast(message, type = 'info') {
     if (!toast) return;
@@ -525,7 +525,7 @@ const JOURNAL_KEY = 'tech_journal_posts';
 const JOURNAL_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzDvb6n1xhulw3W6_V3K6OVwb5-mncUF_58SuQlkp_cvl_Ws9lbuGKI5FvziVOa0t4N/exec';
 const JOURNAL_ADMIN_ID = 'singhutsav555@gmail.com';
 const JOURNAL_ADMIN_PASSWORD = '';
-const JOURNAL_PASSWORD_HINT = 'AKTU NO.';
+const JOURNAL_PASSWORD_HINT = '';
 const JOURNAL_TOKEN_KEY = 'journal_admin_token';
 
 function defaultJournalPosts() {
@@ -610,6 +610,8 @@ function enableAdminIfRequested() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('admin') === '1') {
         journalAdminToggle.style.display = 'inline-flex';
+        sessionStorage.setItem('journal_admin', '1');
+        toggleAdminOnly();
     } else {
         journalAdminToggle.style.display = 'none';
     }
@@ -665,29 +667,6 @@ toggleAdminOnly();
 
 if (journalAdminToggle) {
     journalAdminToggle.addEventListener('click', () => {
-        const ok = sessionStorage.getItem('journal_admin') === '1';
-        if (!ok) {
-            const idEntered = window.prompt('Enter admin ID');
-            if (!idEntered || idEntered.trim().toLowerCase() !== JOURNAL_ADMIN_ID.toLowerCase()) {
-                showToast('Admin ID not recognized.', 'error');
-                return;
-            }
-
-            const entered = window.prompt('Enter admin password (leave blank for OTP)\\nHint: ' + JOURNAL_PASSWORD_HINT);
-            if (!entered) {
-                if (!JOURNAL_ENDPOINT || JOURNAL_ENDPOINT.includes('PASTE_')) {
-                    showToast('Set journal endpoint to use OTP.', 'info');
-                    return;
-                }
-                requestOtp(idEntered.trim());
-                return;
-            }
-            if (entered !== JOURNAL_ADMIN_PASSWORD) {
-                showToast('Incorrect password.', 'error');
-                return;
-            }
-            sessionStorage.setItem('journal_admin', '1');
-        }
         journalAdminPanel.classList.toggle('show');
         toggleAdminOnly();
     });
