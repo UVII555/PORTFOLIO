@@ -53,7 +53,7 @@
                     <div class="hero-cta">
                         <a href="#projects" class="btn btn-primary">View Projects</a>
                         <a href="#" class="btn btn-secondary" id="downloadResume">Download Resume</a>
-                        <a href="https://docs.google.com/spreadsheets/d/1SG4gNOXPLf_fNwyF93zpXTQs958LupNHceujd-el5x8/edit?gid=0#gid=0" class="btn btn-outline" target="_blank" rel="noopener">Apply Now</a>
+                        <a href="#" class="btn btn-outline" id="openTrackerModal">Apply Now</a>
                         <a href="#contact" class="btn btn-outline">Contact Me</a>
                     </div>
                 </div>
@@ -739,6 +739,54 @@
             </div>
         </div>
     </footer>
+
+    <!-- Application Tracker Modal -->
+    <div id="trackerModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="trackerModalTitle">
+            <button class="modal-close" id="closeTrackerModal" aria-label="Close">×</button>
+            <h3 id="trackerModalTitle">Add Application</h3>
+            <p class="modal-subtitle">Log a new application into your tracker sheet.</p>
+            <form id="trackerForm" class="modal-form">
+                <div class="form-group">
+                    <label for="trackerCompany">Company</label>
+                    <input type="text" id="trackerCompany" name="company" required>
+                </div>
+                <div class="form-group">
+                    <label for="trackerRole">Role</label>
+                    <input type="text" id="trackerRole" name="role" required>
+                </div>
+                <div class="form-group">
+                    <label for="trackerLink">Job Link</label>
+                    <input type="url" id="trackerLink" name="link" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label for="trackerStatus">Status</label>
+                    <select id="trackerStatus" name="status" required>
+                        <option value="Applied">Applied</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Offer">Offer</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Follow-up">Follow-up</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="trackerDate">Applied Date</label>
+                    <input type="date" id="trackerDate" name="appliedDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="trackerFollowUp">Follow-up Date</label>
+                    <input type="date" id="trackerFollowUp" name="followUpDate">
+                </div>
+                <div class="form-group">
+                    <label for="trackerNotes">Notes</label>
+                    <textarea id="trackerNotes" name="notes" rows="3" placeholder="Referral, recruiter, etc."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add to Tracker</button>
+                <p class="form-status" id="trackerStatusMsg"></p>
+                <a class="modal-link" href="https://docs.google.com/spreadsheets/d/1SG4gNOXPLf_fNwyF93zpXTQs958LupNHceujd-el5x8/edit?gid=0#gid=0" target="_blank" rel="noopener">Open Tracker Sheet</a>
+            </form>
+        </div>
+    </div>
 
     <script src="dsa-config.js"></script>
     <script src="dsa-tracker.js"></script>

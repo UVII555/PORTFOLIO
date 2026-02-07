@@ -121,6 +121,12 @@ const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('formStatus');
 const CONTACT_FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyM4fC6SrVTphRMoO7F8IbnooKnkJ6f413v1BjYa6OpON2QJtJcR8qVBadPu58UhadegQ/exec';
 const toast = document.getElementById('toast');
+const trackerModal = document.getElementById('trackerModal');
+const openTrackerModal = document.getElementById('openTrackerModal');
+const closeTrackerModal = document.getElementById('closeTrackerModal');
+const trackerForm = document.getElementById('trackerForm');
+const trackerStatusMsg = document.getElementById('trackerStatusMsg');
+const TRACKER_FORM_ENDPOINT = 'PASTE_TRACKER_ENDPOINT_HERE';
 
 function showToast(message, type = 'info') {
     if (!toast) return;
@@ -218,6 +224,79 @@ contactForm.addEventListener('submit', (e) => {
             showToast('Submission failed. Please try again later.', 'error');
         });
 });
+
+function toggleTrackerModal(show) {
+    if (!trackerModal) return;
+    trackerModal.classList.toggle('show', show);
+    trackerModal.setAttribute('aria-hidden', show ? 'false' : 'true');
+    if (show) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+if (openTrackerModal) {
+    openTrackerModal.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleTrackerModal(true);
+    });
+}
+
+if (closeTrackerModal) {
+    closeTrackerModal.addEventListener('click', () => toggleTrackerModal(false));
+}
+
+if (trackerModal) {
+    trackerModal.addEventListener('click', (e) => {
+        if (e.target === trackerModal) toggleTrackerModal(false);
+    });
+}
+
+if (trackerForm) {
+    trackerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!TRACKER_FORM_ENDPOINT || TRACKER_FORM_ENDPOINT.includes('PASTE_')) {
+            if (trackerStatusMsg) trackerStatusMsg.textContent = 'Coming soon: add your tracker endpoint.';
+            showToast('Add your tracker endpoint to enable saving.', 'info');
+            return;
+        }
+
+        const payload = new URLSearchParams({
+            company: document.getElementById('trackerCompany').value.trim(),
+            role: document.getElementById('trackerRole').value.trim(),
+            link: document.getElementById('trackerLink').value.trim(),
+            status: document.getElementById('trackerStatus').value,
+            appliedDate: document.getElementById('trackerDate').value,
+            followUpDate: document.getElementById('trackerFollowUp').value,
+            notes: document.getElementById('trackerNotes').value.trim(),
+            timestamp: new Date().toISOString()
+        });
+
+        if (trackerStatusMsg) trackerStatusMsg.textContent = 'Saving...';
+        showToast('Saving application...', 'info');
+
+        fetch(TRACKER_FORM_ENDPOINT, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: payload.toString()
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error('Failed');
+                return response.text();
+            })
+            .then(() => {
+                if (trackerStatusMsg) trackerStatusMsg.textContent = 'Saved!';
+                trackerForm.reset();
+                showToast('Application saved to tracker.', 'success');
+            })
+            .catch(() => {
+                if (trackerStatusMsg) trackerStatusMsg.textContent = 'Failed to save.';
+                showToast('Tracker save failed. Try again.', 'error');
+            });
+    });
+}
 
 function showFormStatus(message, type) {
     formStatus.textContent = message;
