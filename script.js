@@ -126,7 +126,7 @@ const openTrackerModal = document.getElementById('openTrackerModal');
 const closeTrackerModal = document.getElementById('closeTrackerModal');
 const trackerForm = document.getElementById('trackerForm');
 const trackerStatusMsg = document.getElementById('trackerStatusMsg');
-const CMS_ENDPOINT = 'PASTE_CMS_ENDPOINT_HERE';
+const CMS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbycQAlPIrEZ4e4BPf5QpZiThEisAvfJVg0SguSxHmvIRqRHtzN0BdJmjqReP9mYSLCS1Q/exec';
 const TRACKER_FORM_ENDPOINT = CMS_ENDPOINT;
 
 function showToast(message, type = 'info') {
@@ -635,7 +635,9 @@ function enableAdminIfRequested() {
         journalAdminToggle.style.display = 'inline-flex';
         sessionStorage.setItem('journal_admin', '1');
         toggleAdminOnly();
-        journalAdminPanel.classList.add('show');
+        if (journalAdminPanel) {
+            journalAdminPanel.classList.add('show');
+        }
     } else {
         journalAdminToggle.style.display = 'none';
     }
@@ -920,13 +922,26 @@ toggleAdminOnly();
 
 if (journalAdminToggle) {
     journalAdminToggle.addEventListener('click', () => {
-        journalAdminPanel.classList.toggle('show');
+        if (journalAdminPanel) {
+            journalAdminPanel.classList.toggle('show');
+        }
         toggleAdminOnly();
         if (journalAdminPanel.classList.contains('show')) {
             loadTrackerRows().catch(() => {});
         }
     });
 }
+
+// Internship section only visible when explicitly opened
+function updateInternshipVisibility() {
+    const section = document.getElementById('internships');
+    if (!section) return;
+    const isTarget = window.location.hash === '#internships';
+    section.classList.toggle('section-hidden', !isTarget);
+}
+
+window.addEventListener('hashchange', updateInternshipVisibility);
+updateInternshipVisibility();
 
 if (saveSectionVisibilityBtn) {
     saveSectionVisibilityBtn.addEventListener('click', () => {
