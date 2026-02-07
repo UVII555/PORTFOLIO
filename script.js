@@ -522,6 +522,7 @@ const journalAddBtn = document.getElementById('journalAddBtn');
 const journalSaveBtn = document.getElementById('journalSaveBtn');
 const sectionToggleInputs = document.querySelectorAll('[data-toggle-section]');
 const saveSectionVisibilityBtn = document.getElementById('saveSectionVisibility');
+const resetSectionVisibilityBtn = document.getElementById('resetSectionVisibility');
 const SECTION_VISIBILITY_KEY = 'section_visibility';
 const cmsJson = document.getElementById('cmsJson');
 const cmsLoadBtn = document.getElementById('cmsLoadBtn');
@@ -574,10 +575,11 @@ async function loadJournal() {
             const response = await fetch(`${JOURNAL_ENDPOINT}?mode=read`);
             if (response.ok) {
                 const data = await response.json();
-                if (Array.isArray(data.posts)) {
-                    renderJournal(data.posts);
-                    return;
-                }
+                const posts = Array.isArray(data.posts) && data.posts.length
+                    ? data.posts
+                    : defaultJournalPosts();
+                renderJournal(posts);
+                return;
             }
         } catch (e) {
             // fallback to local
@@ -625,12 +627,15 @@ async function saveJournal() {
     showToast('Journal saved locally (set endpoint for global).', 'info');
 }
 
+let isAdminMode = false;
 function enableAdminIfRequested() {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === '1') {
+    isAdminMode = params.get('admin') === '1';
+    if (isAdminMode) {
         journalAdminToggle.style.display = 'inline-flex';
         sessionStorage.setItem('journal_admin', '1');
         toggleAdminOnly();
+        journalAdminPanel.classList.add('show');
     } else {
         journalAdminToggle.style.display = 'none';
     }
@@ -679,7 +684,7 @@ function applySectionVisibility() {
     const visibility = raw ? JSON.parse(raw) : {};
     sectionToggleInputs.forEach(input => {
         const id = input.getAttribute('data-toggle-section');
-        const isVisible = visibility[id] !== false;
+        const isVisible = isAdminMode ? true : visibility[id] !== false;
         input.checked = isVisible;
         const section = document.getElementById(id);
         if (section) {
@@ -940,6 +945,14 @@ if (saveSectionVisibilityBtn) {
         } else {
             showToast('Section visibility updated.', 'success');
         }
+    });
+}
+
+if (resetSectionVisibilityBtn) {
+    resetSectionVisibilityBtn.addEventListener('click', () => {
+        localStorage.removeItem(SECTION_VISIBILITY_KEY);
+        applySectionVisibility();
+        showToast('Section visibility reset.', 'success');
     });
 }
 

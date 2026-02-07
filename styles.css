@@ -1118,6 +1118,12 @@ section {
     display: none !important;
 }
 
+.toggle-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
 .cms-editor {
     margin-bottom: var(--spacing-md);
     display: grid;
