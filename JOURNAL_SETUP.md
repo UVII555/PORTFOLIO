@@ -15,7 +15,7 @@ Extensions -> Apps Script, paste:
 
 ```javascript
 const ADMIN_ID = "singhutsav555@gmail.com";
-const ADMIN_PASSWORD = "2401330120206";
+const ADMIN_PASSWORD = "SET_IN_APPS_SCRIPT";
 
 function doGet(e) {
   const mode = (e.parameter && e.parameter.mode) || "read";
@@ -57,14 +57,22 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
     if ((body.code || "") === code) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
+      const token = Utilities.getUuid();
+      props.setProperty("otp_token", token);
+      props.setProperty("otp_token_expires", (Date.now() + 60 * 60 * 1000).toString());
+      return ContentService.createTextOutput(JSON.stringify({ status: "ok", token }))
         .setMimeType(ContentService.MimeType.JSON);
     }
     return ContentService.createTextOutput(JSON.stringify({ status: "invalid" }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  if (body.password !== ADMIN_PASSWORD) {
+  const token = body.token || "";
+  const storedToken = PropertiesService.getScriptProperties().getProperty("otp_token") || "";
+  const tokenExp = Number(PropertiesService.getScriptProperties().getProperty("otp_token_expires") || "0");
+  const tokenValid = token && token === storedToken && Date.now() < tokenExp;
+
+  if (body.password !== ADMIN_PASSWORD && !tokenValid) {
     return ContentService.createTextOutput(JSON.stringify({ error: "unauthorized" }))
       .setMimeType(ContentService.MimeType.JSON);
   }

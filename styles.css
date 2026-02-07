@@ -660,6 +660,86 @@ section {
     background-color: var(--bg-secondary);
 }
 
+/* ============================================
+   Internship Targets Section
+   ============================================ */
+.internship-targets {
+    background: var(--bg-primary);
+}
+
+.targets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+}
+
+.target-column {
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.target-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.target-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm);
+    border-radius: 10px;
+    background: var(--bg-primary);
+}
+
+.target-list span {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.target-list a {
+    color: var(--accent-primary);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.target-list a:hover {
+    text-decoration: underline;
+}
+
+.tracker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.tracker-card {
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.tracker-card p {
+    color: var(--text-secondary);
+}
+
+.tracker-list {
+    margin: var(--spacing-sm) 0 0 0;
+    padding-left: var(--spacing-md);
+    color: var(--text-secondary);
+}
+
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -1018,6 +1098,10 @@ section {
     border: 1px solid var(--border-color);
     border-radius: 999px;
     padding: 0.35rem 0.9rem;
+}
+
+[data-admin-only] {
+    display: none;
 }
 .honeypot-field {
     position: absolute;

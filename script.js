@@ -135,6 +135,14 @@ function showToast(message, type = 'info') {
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    const lastSubmit = Number(localStorage.getItem('contact_last_submit') || '0');
+    const now = Date.now();
+    if (now - lastSubmit < 120000) {
+        showFormStatus('Please wait a bit before sending another message.', 'info');
+        showToast('Please wait 2 minutes before sending another message.', 'info');
+        return;
+    }
+
     if (!CONTACT_FORM_ENDPOINT || CONTACT_FORM_ENDPOINT.includes('PASTE_')) {
         showFormStatus('Coming soon: add your Google Sheets endpoint to enable submissions.', 'info');
         return;
@@ -198,6 +206,7 @@ contactForm.addEventListener('submit', (e) => {
         .then(() => {
             showFormStatus('Message sent successfully! I\'ll get back to you soon.', 'success');
             showToast('Message sent successfully!', 'success');
+            localStorage.setItem('contact_last_submit', String(Date.now()));
             contactForm.reset();
             setTimeout(() => {
                 formStatus.textContent = '';
@@ -436,8 +445,9 @@ const journalBody = document.getElementById('journalBody');
 const JOURNAL_KEY = 'tech_journal_posts';
 const JOURNAL_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzDvb6n1xhulw3W6_V3K6OVwb5-mncUF_58SuQlkp_cvl_Ws9lbuGKI5FvziVOa0t4N/exec';
 const JOURNAL_ADMIN_ID = 'singhutsav555@gmail.com';
-const JOURNAL_ADMIN_PASSWORD = '2401330120206';
+const JOURNAL_ADMIN_PASSWORD = '';
 const JOURNAL_PASSWORD_HINT = 'AKTU NO.';
+const JOURNAL_TOKEN_KEY = 'journal_admin_token';
 
 function defaultJournalPosts() {
     return Array.from(journalGrid.querySelectorAll('.journal-card')).map(card => ({
@@ -501,6 +511,7 @@ async function saveJournal() {
                 body: JSON.stringify({
                     mode: 'write',
                     password: JOURNAL_ADMIN_PASSWORD,
+                    token: sessionStorage.getItem(JOURNAL_TOKEN_KEY) || '',
                     posts
                 })
             });
@@ -563,12 +574,18 @@ if (journalGrid) {
     setupDragAndDrop();
 }
 
+const adminOnlyEls = document.querySelectorAll('[data-admin-only]');
+function toggleAdminOnly() {
+    const isAdmin = sessionStorage.getItem('journal_admin') === '1';
+    adminOnlyEls.forEach(el => {
+        el.style.display = isAdmin ? 'inline-flex' : 'none';
+    });
+}
+
+toggleAdminOnly();
+
 if (journalAdminToggle) {
     journalAdminToggle.addEventListener('click', () => {
-        if (!JOURNAL_ADMIN_PASSWORD || JOURNAL_ADMIN_PASSWORD.includes('PASTE_')) {
-            showToast('Set admin credentials in script.js first.', 'info');
-            return;
-        }
         const ok = sessionStorage.getItem('journal_admin') === '1';
         if (!ok) {
             const idEntered = window.prompt('Enter admin ID');
@@ -593,6 +610,7 @@ if (journalAdminToggle) {
             sessionStorage.setItem('journal_admin', '1');
         }
         journalAdminPanel.classList.toggle('show');
+        toggleAdminOnly();
     });
 }
 
@@ -615,6 +633,9 @@ async function requestOtp(adminId) {
         const data = await verify.json();
         if (data && data.status === 'ok') {
             sessionStorage.setItem('journal_admin', '1');
+            if (data.token) {
+                sessionStorage.setItem(JOURNAL_TOKEN_KEY, data.token);
+            }
             journalAdminPanel.classList.add('show');
             showToast('Admin access granted.', 'success');
             return;
